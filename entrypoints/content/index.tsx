@@ -2,6 +2,7 @@ import './style.css';
 import ReactDOM from 'react-dom/client';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
+import BagIcon from './BagIcon';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -18,24 +19,9 @@ export default defineContentScript({
         app.className = 'magic-bag-container';
         container.append(app);
 
-        // React root will be mounted here in next plan
-        // For now, just verify container is created
+        // Render BagIcon component
         const root = ReactDOM.createRoot(app);
-
-        // Placeholder - will render <BagIcon /> in plan 01-03
-        root.render(
-          <div style={{
-            width: '48px',
-            height: '48px',
-            backgroundColor: '#6B7280',
-            borderRadius: '50%',
-            opacity: '0.8',
-            border: '1px solid #9CA3AF',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          }}>
-            {/* Placeholder icon - BagIcon component coming in plan 01-03 */}
-          </div>
-        );
+        root.render(<BagIcon />);
 
         return root;
       },

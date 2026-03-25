@@ -5,5 +5,14 @@
 /* Shadow DOM isolation - these styles only apply within the Shadow Root */
 .magic-bag-container {
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 2147483647; /* From CONTEXT.md D-10 */
+  pointer-events: none; /* Let clicks pass through empty areas */
+}
+
+.magic-bag-container > div {
+  pointer-events: auto; /* Re-enable clicks on the icon */
 }

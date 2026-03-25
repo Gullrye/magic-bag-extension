@@ -1,2 +1,21 @@
+# WXT output
+.output
+.wxt
+
+# Dependencies
 node_modules
+.pnpm-store
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build
 dist

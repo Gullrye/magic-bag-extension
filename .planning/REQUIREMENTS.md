@@ -16,7 +16,7 @@
 
 - [ ] **ICON-01**: Floating icon displays on all web pages
 - [ ] **ICON-02**: Icon can be dragged to any of 4 screen edges (top/bottom/left/right)
-- [ ] **ICON-03**: Icon position persists across page reloads and browser sessions
+- [x] **ICON-03**: Icon position persists across page reloads and browser sessions
 - [ ] **ICON-04**: Icon uses Chinese traditional (国风) visual style
 
 ### Tab Collection
@@ -81,7 +81,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-04 | Phase 1 | Complete |
 | ICON-01 | Phase 1 | Pending |
 | ICON-02 | Phase 1 | Pending |
-| ICON-03 | Phase 1 | Pending |
+| ICON-03 | Phase 1 | Complete |
 | ICON-04 | Phase 4 | Pending |
 | COLL-01 | Phase 2 | Pending |
 | COLL-02 | Phase 2 | Pending |

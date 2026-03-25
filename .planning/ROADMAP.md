@@ -12,7 +12,7 @@ Build a Chromium/Edge browser extension that lets users collect open tabs into a
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Infrastructure & Floating Icon** - Extension boots with WXT/React/TS, floating draggable icon on all pages
+- [x] **Phase 1: Infrastructure & Floating Icon** - Extension boots with WXT/React/TS, floating draggable icon on all pages (completed 2026-03-25)
 - [ ] **Phase 2: Tab Collection & Display** - Context menu collection, chessboard grid display, tab restoration
 - [ ] **Phase 3: Tab Management** - Delete, clear, reorder, and search tabs
 - [ ] **Phase 4: Polish & Portability** - JSON export/import, Guofeng visual style
@@ -80,7 +80,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure & Floating Icon | 3/5 | Executing | 01-00, 01-01, 01-02 |
+| 1. Infrastructure & Floating Icon | 5/5 | Complete   | 2026-03-25 |
 | 2. Tab Collection & Display | 0/TBD | Not started | - |
 | 3. Tab Management | 0/TBD | Not started | - |
 | 4. Polish & Portability | 0/TBD | Not started | - |

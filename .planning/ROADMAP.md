@@ -32,8 +32,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] [01-00-PLAN.md](./phases/01-infrastructure-floating-icon/01-00-PLAN.md) — Set up Vitest test infrastructure with test stubs for all Phase 1 components (Wave 0)
 - [x] [01-01-PLAN.md](./phases/01-infrastructure-floating-icon/01-01-PLAN.md) — Initialize WXT project with React + TypeScript, Manifest V3 configuration, and service worker
 - [x] [01-02-PLAN.md](./phases/01-infrastructure-floating-icon/01-02-PLAN.md) — Set up content script with Shadow DOM isolation and WXT storage module
-- [ ] [01-03-PLAN.md](./phases/01-infrastructure-floating-icon/01-03-PLAN.md) — Implement floating icon component with drag behavior and edge snapping
-- [ ] [01-04-PLAN.md](./phases/01-infrastructure-floating-icon/01-04-PLAN.md) — Verify position persistence, cross-site testing, and finalize documentation
+- [x] [01-03-PLAN.md](./phases/01-infrastructure-floating-icon/01-03-PLAN.md) — Implement floating icon component with drag behavior and edge snapping
+- [x] [01-04-PLAN.md](./phases/01-infrastructure-floating-icon/01-04-PLAN.md) — Verify position persistence, cross-site testing, and finalize documentation
 **UI hint**: yes
 
 ### Phase 2: Tab Collection & Display
@@ -41,13 +41,18 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Depends on**: Phase 1
 **Requirements**: COLL-01, COLL-02, COLL-03, COLL-04, GRID-01, GRID-02, GRID-03, GRID-04, GRID-05
 **Success Criteria** (what must be TRUE):
-  1. User can right-click any page and see context menu option "收入法宝袋"
+  1. User can right-click any page and see context menu option "将标签页收入法宝袋"
   2. Selecting context menu captures tab URL/title/favicon and closes original tab
   3. Clicking floating icon reveals tabs in chessboard grid spreading from icon position
   4. Each tab in grid shows favicon and title
   5. Clicking a tab in grid opens the URL in a new browser tab
   6. Clicking outside the grid closes it
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] [02-01-PLAN.md](./phases/02-tab-collection-display/02-01-PLAN.md) — Define SavedTab type and storage item with helper functions (Wave 1)
+- [ ] [02-02-PLAN.md](./phases/02-tab-collection-display/02-02-PLAN.md) — Implement context menu integration and tab collection handler (Wave 1)
+- [ ] [02-03-PLAN.md](./phases/02-tab-collection-display/02-03-PLAN.md) — Create TabCard and EmptyState components (Wave 2)
+- [ ] [02-04-PLAN.md](./phases/02-tab-collection-display/02-04-PLAN.md) — Create TabGrid, Toast, and useClickOutside hook (Wave 2)
+- [ ] [02-05-PLAN.md](./phases/02-tab-collection-display/02-05-PLAN.md) — Integrate all components in content script with tab restoration (Wave 3)
 **UI hint**: yes
 
 ### Phase 3: Tab Management
@@ -81,6 +86,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure & Floating Icon | 5/5 | Complete   | 2026-03-25 |
-| 2. Tab Collection & Display | 0/TBD | Not started | - |
+| 2. Tab Collection & Display | 0/5 | Not started | - |
 | 3. Tab Management | 0/TBD | Not started | - |
 | 4. Polish & Portability | 0/TBD | Not started | - |

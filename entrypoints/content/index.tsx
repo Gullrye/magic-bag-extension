@@ -1,6 +1,7 @@
 import './style.css';
 import ReactDOM from 'react-dom/client';
-import { defineContentScript, createShadowRootUi } from 'wxt/sandbox';
+import { defineContentScript } from 'wxt/utils/define-content-script';
+import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
 
 export default defineContentScript({
   matches: ['<all_urls>'],

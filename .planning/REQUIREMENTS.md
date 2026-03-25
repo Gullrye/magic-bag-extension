@@ -7,10 +7,10 @@
 
 ### Infrastructure
 
-- [ ] **INFR-01**: Extension boots with WXT + React + TypeScript + Manifest V3
+- [x] **INFR-01**: Extension boots with WXT + React + TypeScript + Manifest V3
 - [ ] **INFR-02**: Shadow DOM isolates all content script UI from host page CSS
-- [ ] **INFR-03**: Service worker handles privileged Chrome APIs (tabs, contextMenus, storage)
-- [ ] **INFR-04**: `unlimitedStorage` permission requested for large tab collections
+- [x] **INFR-03**: Service worker handles privileged Chrome APIs (tabs, contextMenus, storage)
+- [x] **INFR-04**: `unlimitedStorage` permission requested for large tab collections
 
 ### Floating Icon
 
@@ -75,10 +75,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFR-01 | Phase 1 | Pending |
+| INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 1 | Pending |
-| INFR-03 | Phase 1 | Pending |
-| INFR-04 | Phase 1 | Pending |
+| INFR-03 | Phase 1 | Complete |
+| INFR-04 | Phase 1 | Complete |
 | ICON-01 | Phase 1 | Pending |
 | ICON-02 | Phase 1 | Pending |
 | ICON-03 | Phase 1 | Pending |

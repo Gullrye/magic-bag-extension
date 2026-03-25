@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Shadow DOM isolation - these styles only apply within the Shadow Root */
+.magic-bag-container {
+  position: fixed;
+  z-index: 2147483647; /* From CONTEXT.md D-10 */
+}

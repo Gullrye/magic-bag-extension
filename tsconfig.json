@@ -17,6 +17,6 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", ".wxt/**/*.d.ts"],
   "exclude": ["node_modules", ".output", "dist"]
 }

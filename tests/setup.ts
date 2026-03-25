@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 // Mock Chrome APIs for service worker and storage tests
-global.chrome = {
+(globalThis as any).chrome = {
   storage: {
     local: {
       get: (keys: string | string[] | object, callback?: (result: object) => void) => {

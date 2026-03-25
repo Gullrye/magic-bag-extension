@@ -28,7 +28,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Floating icon appears on all web pages with proper Shadow DOM isolation
   3. User can drag icon to any of 4 screen edges (top/bottom/left/right)
   4. Icon position persists after page reload and browser restart
-**Plans**: 4 plans
+**Plans**: 5 plans
+- [ ] [01-00-PLAN.md](./phases/01-infrastructure-floating-icon/01-00-PLAN.md) — Set up Vitest test infrastructure with test stubs for all Phase 1 components (Wave 0)
 - [ ] [01-01-PLAN.md](./phases/01-infrastructure-floating-icon/01-01-PLAN.md) — Initialize WXT project with React + TypeScript, Manifest V3 configuration, and service worker
 - [ ] [01-02-PLAN.md](./phases/01-infrastructure-floating-icon/01-02-PLAN.md) — Set up content script with Shadow DOM isolation and WXT storage module
 - [ ] [01-03-PLAN.md](./phases/01-infrastructure-floating-icon/01-03-PLAN.md) — Implement floating icon component with drag behavior and edge snapping
@@ -79,7 +80,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure & Floating Icon | 0/4 | Planning complete | - |
+| 1. Infrastructure & Floating Icon | 0/5 | Planning complete | - |
 | 2. Tab Collection & Display | 0/TBD | Not started | - |
 | 3. Tab Management | 0/TBD | Not started | - |
 | 4. Polish & Portability | 0/TBD | Not started | - |

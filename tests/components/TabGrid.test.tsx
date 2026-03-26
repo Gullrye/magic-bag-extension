@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { TabGrid } from '~/entrypoints/content/TabGrid';
-import { iconPosition, removeTab, savedTabs } from '~/utils/storage';
+import { clearTabs, iconPosition, removeTab, savedTabs } from '~/utils/storage';
 
 // Mock storage
 vi.mock('~/utils/storage', () => ({
@@ -12,6 +12,7 @@ vi.mock('~/utils/storage', () => ({
   iconPosition: {
     getValue: vi.fn(),
   },
+  clearTabs: vi.fn(),
   removeTab: vi.fn(),
 }));
 
@@ -28,6 +29,7 @@ describe('TabGrid', () => {
     // Default mock implementations
     (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([]);
     (savedTabs.watch as ReturnType<typeof vi.fn>).mockReturnValue(vi.fn());
+    (clearTabs as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
     (iconPosition.getValue as ReturnType<typeof vi.fn>).mockResolvedValue({ x: 100, y: 100, edge: 'bottom' });
     (removeTab as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
   });
@@ -193,6 +195,54 @@ describe('TabGrid', () => {
     expect(screen.queryByText('Guide')).not.toBeInTheDocument();
   });
 
-  it.todo('opens a clear-all confirmation flow from the grid header');
+  it('opens a clear-all confirmation flow from the grid header', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+    ]);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    fireEvent.click(await screen.findByRole('button', { name: '清空' }));
+
+    expect(await screen.findByRole('alertdialog')).toBeInTheDocument();
+    expect(screen.getByText('清空法宝袋？')).toBeInTheDocument();
+  });
+
+  it('clears all tabs after the confirmation action is chosen', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+    ]);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    fireEvent.click(await screen.findByRole('button', { name: '清空' }));
+    fireEvent.click(await screen.findByRole('button', { name: '确认清空' }));
+
+    await waitFor(() => {
+      expect(clearTabs).toHaveBeenCalledTimes(1);
+      expect(screen.getByText('法宝袋是空的')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText('Alpha Notes')).not.toBeInTheDocument();
+  });
+
+  it('closes the confirmation dialog without clearing tabs when cancelled', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+    ]);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    fireEvent.click(await screen.findByRole('button', { name: '清空' }));
+    fireEvent.click(await screen.findByRole('button', { name: '取消' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+
+    expect(clearTabs).not.toHaveBeenCalled();
+    expect(screen.getByText('Alpha Notes')).toBeInTheDocument();
+  });
+
   it.todo('supports drag-to-reorder interactions');
 });

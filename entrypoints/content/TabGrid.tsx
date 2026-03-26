@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { iconPosition, removeTab, savedTabs } from '~/utils/storage';
+import { clearTabs, iconPosition, removeTab, savedTabs } from '~/utils/storage';
 import { useClickOutside } from '~/utils/clickOutside';
+import { ConfirmDialog } from './ConfirmDialog';
 import { TabCard } from './TabCard';
 import { EmptyState } from './EmptyState';
 import type { SavedTab } from './types';
@@ -13,6 +14,7 @@ interface TabGridProps {
 
 export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   const [query, setQuery] = useState('');
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [tabs, setTabs] = useState<SavedTab[]>([]);
   const [iconPos, setIconPos] = useState({ x: 0, y: 0 });
   const gridRef = useRef<HTMLDivElement>(null);
@@ -30,6 +32,12 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   const handleDelete = useCallback(async (url: string) => {
     await removeTab(url);
     setTabs((currentTabs) => currentTabs.filter((tab) => tab.url !== url));
+  }, []);
+  const handleConfirmClear = useCallback(async () => {
+    await clearTabs();
+    setTabs([]);
+    setQuery('');
+    setIsConfirmOpen(false);
   }, []);
 
   // Load initial tabs and watch for changes
@@ -85,11 +93,11 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       role="dialog"
       aria-label="法宝袋"
     >
-      <div className="mb-6">
+      <div className="mb-6 flex items-center gap-3">
         <label className="sr-only" htmlFor="magic-bag-search">
           搜索标题或网址
         </label>
-        <div className="relative">
+        <div className="relative flex-1">
           <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-amber-700/80">
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
               <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
@@ -105,6 +113,16 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
             className="h-11 w-full rounded-[10px] border border-amber-700/30 bg-white/95 pl-11 pr-4 text-[14px] text-gray-700 outline-none transition-colors focus:border-blue-500"
           />
         </div>
+
+        {tabs.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => setIsConfirmOpen(true)}
+            className="h-11 shrink-0 rounded-lg border border-amber-700/40 bg-white/90 px-4 text-[14px] font-medium text-amber-900"
+          >
+            清空
+          </button>
+        ) : null}
       </div>
 
       {tabs.length === 0 ? (
@@ -136,6 +154,16 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
           })}
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="清空法宝袋？"
+        message="这会移除所有已收纳标签页，且无法撤销。"
+        confirmText="确认清空"
+        cancelText="取消"
+        onConfirm={handleConfirmClear}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }

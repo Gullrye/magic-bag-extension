@@ -19,6 +19,20 @@ beforeEach(() => {
   mockStorage.clear(); // Clear storage Map between tests
 });
 
+// Minimal pointer-event support for future @dnd-kit interaction tests.
+if (!(globalThis as any).PointerEvent) {
+  class MockPointerEvent extends MouseEvent {}
+  (globalThis as any).PointerEvent = MockPointerEvent;
+}
+
+if (!HTMLElement.prototype.setPointerCapture) {
+  HTMLElement.prototype.setPointerCapture = vi.fn();
+}
+
+if (!HTMLElement.prototype.releasePointerCapture) {
+  HTMLElement.prototype.releasePointerCapture = vi.fn();
+}
+
 // Mock WXT defineBackground function
 (globalThis as any).defineBackground = (fn: () => void) => {
   fn(); // Execute the background function immediately

@@ -1,6 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { savedTabs, iconPosition } from '~/utils/storage';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { clearTabs, iconPosition, removeTab, reorderTabs, savedTabs } from '~/utils/storage';
 import { useClickOutside } from '~/utils/clickOutside';
+import { ConfirmDialog } from './ConfirmDialog';
 import { TabCard } from './TabCard';
 import { EmptyState } from './EmptyState';
 import type { SavedTab } from './types';
@@ -11,10 +26,98 @@ interface TabGridProps {
   onTabClick: (url: string) => void;
 }
 
+interface SortableTabCardProps {
+  offsetX: number;
+  offsetY: number;
+  onDelete: (url: string) => void;
+  onTabClick: (url: string) => void;
+  rotate: number;
+  tab: SavedTab;
+}
+
+function SortableTabCard({
+  offsetX,
+  offsetY,
+  onDelete,
+  onTabClick,
+  rotate,
+  tab,
+}: SortableTabCardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: tab.url,
+  });
+  const dragTransform = transform ? CSS.Transform.toString(transform) : '';
+  const baseTransform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: [dragTransform, baseTransform].filter(Boolean).join(' '),
+        transition,
+        opacity: isDragging ? 0.85 : 1,
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      <TabCard tab={tab} onClick={onTabClick} onDelete={onDelete} />
+    </div>
+  );
+}
+
 export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
+  const [query, setQuery] = useState('');
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [tabs, setTabs] = useState<SavedTab[]>([]);
   const [iconPos, setIconPos] = useState({ x: 0, y: 0 });
   const gridRef = useRef<HTMLDivElement>(null);
+  const filteredTabs = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return tabs;
+    }
+
+    return tabs.filter((tab) => (
+      tab.title.toLowerCase().includes(normalizedQuery)
+      || tab.url.toLowerCase().includes(normalizedQuery)
+    ));
+  }, [tabs, query]);
+  const handleDelete = useCallback(async (url: string) => {
+    await removeTab(url);
+    setTabs((currentTabs) => currentTabs.filter((tab) => tab.url !== url));
+  }, []);
+  const handleConfirmClear = useCallback(async () => {
+    await clearTabs();
+    setTabs([]);
+    setQuery('');
+    setIsConfirmOpen(false);
+  }, []);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
+  const isReorderEnabled = query.trim().length === 0;
+  const handleDragEnd = useCallback(async (event: { active: { id: string }; over: { id: string } | null }) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id || !isReorderEnabled) {
+      return;
+    }
+
+    const oldIndex = tabs.findIndex((tab) => tab.url === active.id);
+    const newIndex = tabs.findIndex((tab) => tab.url === over.id);
+
+    if (oldIndex < 0 || newIndex < 0) {
+      return;
+    }
+
+    const reorderedTabs = arrayMove(tabs, oldIndex, newIndex);
+    setTabs(reorderedTabs);
+    await reorderTabs(reorderedTabs);
+  }, [isReorderEnabled, tabs]);
 
   // Load initial tabs and watch for changes
   useEffect(() => {
@@ -22,6 +125,12 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
     const unwatch = savedTabs.watch(setTabs);
     return () => unwatch();
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setQuery('');
+    }
+  }, [isOpen]);
 
   // Load icon position for transform-origin (GRID-02 implementation)
   useEffect(() => {
@@ -63,11 +172,74 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       role="dialog"
       aria-label="法宝袋"
     >
+      <div className="mb-6 flex items-center gap-3">
+        <label className="sr-only" htmlFor="magic-bag-search">
+          搜索标题或网址
+        </label>
+        <div className="relative flex-1">
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-amber-700/80">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </span>
+          <input
+            id="magic-bag-search"
+            type="text"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="搜索标题或网址"
+            className="h-11 w-full rounded-[10px] border border-amber-700/30 bg-white/95 pl-11 pr-4 text-[14px] text-gray-700 outline-none transition-colors focus:border-blue-500"
+          />
+        </div>
+
+        {tabs.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => setIsConfirmOpen(true)}
+            className="h-11 shrink-0 rounded-lg border border-amber-700/40 bg-white/90 px-4 text-[14px] font-medium text-amber-900"
+          >
+            清空
+          </button>
+        ) : null}
+      </div>
+
       {tabs.length === 0 ? (
         <EmptyState />
+      ) : filteredTabs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-3 py-12 text-center text-gray-700">
+          <p className="text-[16px] font-semibold text-amber-900">未找到匹配的标签页</p>
+          <p className="max-w-sm text-[14px] leading-[1.5] text-gray-600">
+            试试更换关键词，或清空搜索后查看全部标签
+          </p>
+        </div>
+      ) : isReorderEnabled ? (
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={tabs.map((tab) => tab.url)} strategy={rectSortingStrategy}>
+            <div className="flex flex-wrap gap-6 justify-start content-start">
+              {tabs.map((tab, index) => {
+                // 棋子散落效果：轻微随机偏移
+                const offsetX = (index % 5) * 8;
+                const offsetY = Math.floor(index / 5) * 6;
+                const rotate = ((index % 7) - 3) * 1.5; // 轻微旋转
+                return (
+                  <SortableTabCard
+                    key={tab.url}
+                    offsetX={offsetX}
+                    offsetY={offsetY}
+                    onDelete={handleDelete}
+                    onTabClick={onTabClick}
+                    rotate={rotate}
+                    tab={tab}
+                  />
+                );
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
       ) : (
         <div className="flex flex-wrap gap-6 justify-start content-start">
-          {tabs.map((tab, index) => {
+          {filteredTabs.map((tab, index) => {
             // 棋子散落效果：轻微随机偏移
             const offsetX = (index % 5) * 8;
             const offsetY = Math.floor(index / 5) * 6;
@@ -79,12 +251,22 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
                   transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`,
                 }}
               >
-                <TabCard tab={tab} onClick={onTabClick} />
+                <TabCard tab={tab} onClick={onTabClick} onDelete={handleDelete} />
               </div>
             );
           })}
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="清空法宝袋？"
+        message="这会移除所有已收纳标签页，且无法撤销。"
+        confirmText="确认清空"
+        cancelText="取消"
+        onConfirm={handleConfirmClear}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }

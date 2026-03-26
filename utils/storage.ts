@@ -32,3 +32,11 @@ export async function removeTab(url: string): Promise<void> {
   const current = await savedTabs.getValue();
   await savedTabs.setValue(current.filter(tab => tab.url !== url));
 }
+
+export async function clearTabs(): Promise<void> {
+  await savedTabs.setValue([]);
+}
+
+export async function reorderTabs(nextTabs: SavedTab[]): Promise<void> {
+  await savedTabs.setValue(nextTabs);
+}

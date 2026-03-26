@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { savedTabs, addTab, hasDuplicateUrl, removeTab } from '~/utils/storage';
+import { savedTabs, addTab, clearTabs, hasDuplicateUrl, removeTab, reorderTabs } from '~/utils/storage';
 import type { SavedTab } from '~/entrypoints/content/types';
 
 describe('Storage Utilities', () => {
@@ -129,5 +129,51 @@ describe('Storage Layer - Phase 2', () => {
       expect(stored[1].url).toBe('https://second.com');
       expect(stored[2].url).toBe('https://first.com'); // Oldest
     });
+  });
+});
+
+describe('Storage Layer - Phase 3 Wave 0 Stubs', () => {
+  it('clears all saved tabs with a dedicated helper', async () => {
+    const tabs: SavedTab[] = [
+      { url: 'https://one.com', title: 'One', timestamp: 1 },
+      { url: 'https://two.com', title: 'Two', timestamp: 2 },
+    ];
+
+    await savedTabs.setValue(tabs);
+    await clearTabs();
+
+    await expect(savedTabs.getValue()).resolves.toEqual([]);
+  });
+
+  it('persists reordered saved tabs', async () => {
+    const tabs: SavedTab[] = [
+      { url: 'https://one.com', title: 'One', timestamp: 1 },
+      { url: 'https://two.com', title: 'Two', timestamp: 2 },
+      { url: 'https://three.com', title: 'Three', timestamp: 3 },
+    ];
+
+    await savedTabs.setValue(tabs);
+    await reorderTabs([tabs[2], tabs[0], tabs[1]]);
+
+    await expect(savedTabs.getValue()).resolves.toEqual([
+      tabs[2],
+      tabs[0],
+      tabs[1],
+    ]);
+  });
+  it('removes a single saved tab without affecting the others', async () => {
+    const tabs: SavedTab[] = [
+      { url: 'https://one.com', title: 'One', timestamp: 1 },
+      { url: 'https://two.com', title: 'Two', timestamp: 2 },
+      { url: 'https://three.com', title: 'Three', timestamp: 3 },
+    ];
+
+    await savedTabs.setValue(tabs);
+    await removeTab('https://two.com');
+
+    await expect(savedTabs.getValue()).resolves.toEqual([
+      tabs[0],
+      tabs[2],
+    ]);
   });
 });

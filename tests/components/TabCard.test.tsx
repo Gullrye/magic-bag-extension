@@ -52,6 +52,25 @@ describe('TabCard', () => {
     expect(svg).toBeInTheDocument();
   });
 
-  it.todo('renders a delete affordance with an accessible label');
-  it.todo('does not call onClick when the delete affordance is pressed');
+  it('renders a delete affordance with an accessible label', async () => {
+    const onClick = vi.fn();
+    const onDelete = vi.fn();
+
+    render(<TabCard {...({ tab: mockTab, onClick, onDelete } as any)} />);
+
+    expect(await screen.findByRole('button', { name: '删除标签页' })).toBeInTheDocument();
+  });
+
+  it('does not call onClick when the delete affordance is pressed', async () => {
+    const onClick = vi.fn();
+    const onDelete = vi.fn();
+
+    render(<TabCard tab={mockTab} onClick={onClick} onDelete={onDelete} />);
+
+    fireEvent.click(await screen.findByRole('button', { name: '删除标签页' }));
+
+    expect(onDelete).toHaveBeenCalledTimes(1);
+    expect(onDelete).toHaveBeenCalledWith(mockTab.url);
+    expect(onClick).not.toHaveBeenCalled();
+  });
 });

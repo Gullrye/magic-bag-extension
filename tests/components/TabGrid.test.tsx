@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { TabGrid } from '~/entrypoints/content/TabGrid';
-import { savedTabs, iconPosition } from '~/utils/storage';
+import { iconPosition, removeTab, savedTabs } from '~/utils/storage';
 
 // Mock storage
 vi.mock('~/utils/storage', () => ({
@@ -12,6 +12,7 @@ vi.mock('~/utils/storage', () => ({
   iconPosition: {
     getValue: vi.fn(),
   },
+  removeTab: vi.fn(),
 }));
 
 // Mock useClickOutside
@@ -28,6 +29,7 @@ describe('TabGrid', () => {
     (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([]);
     (savedTabs.watch as ReturnType<typeof vi.fn>).mockReturnValue(vi.fn());
     (iconPosition.getValue as ReturnType<typeof vi.fn>).mockResolvedValue({ x: 100, y: 100, edge: 'bottom' });
+    (removeTab as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
   });
 
   it('calls savedTabs.getValue on mount', () => {
@@ -147,6 +149,48 @@ describe('TabGrid', () => {
     expect(await screen.findByText('未找到匹配的标签页')).toBeInTheDocument();
     expect(screen.getByText('试试更换关键词，或清空搜索后查看全部标签')).toBeInTheDocument();
     expect(screen.queryByText('Alpha Notes')).not.toBeInTheDocument();
+  });
+
+  it('removes a tab from the grid when its delete action is pressed', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+      { url: 'https://docs.example.com/guide', title: 'Guide', timestamp: 2 },
+    ]);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    expect(await screen.findByText('Alpha Notes')).toBeInTheDocument();
+    fireEvent.click((await screen.findAllByRole('button', { name: '删除标签页' }))[0]);
+
+    await waitFor(() => {
+      expect(removeTab).toHaveBeenCalledWith('https://alpha.dev');
+      expect(screen.queryByText('Alpha Notes')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Guide')).toBeInTheDocument();
+  });
+
+  it('keeps the active filter after deleting the only matching tab', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+      { url: 'https://docs.example.com/guide', title: 'Guide', timestamp: 2 },
+    ]);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    fireEvent.change(await screen.findByPlaceholderText('搜索标题或网址'), {
+      target: { value: 'alpha' },
+    });
+
+    fireEvent.click((await screen.findAllByRole('button', { name: '删除标签页' }))[0]);
+
+    await waitFor(() => {
+      expect(removeTab).toHaveBeenCalledWith('https://alpha.dev');
+      expect(screen.getByPlaceholderText('搜索标题或网址')).toHaveValue('alpha');
+      expect(screen.getByText('未找到匹配的标签页')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText('Guide')).not.toBeInTheDocument();
   });
 
   it.todo('opens a clear-all confirmation flow from the grid header');

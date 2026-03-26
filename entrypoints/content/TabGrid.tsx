@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { savedTabs, iconPosition } from '~/utils/storage';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { iconPosition, removeTab, savedTabs } from '~/utils/storage';
 import { useClickOutside } from '~/utils/clickOutside';
 import { TabCard } from './TabCard';
 import { EmptyState } from './EmptyState';
@@ -27,6 +27,10 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       || tab.url.toLowerCase().includes(normalizedQuery)
     ));
   }, [tabs, query]);
+  const handleDelete = useCallback(async (url: string) => {
+    await removeTab(url);
+    setTabs((currentTabs) => currentTabs.filter((tab) => tab.url !== url));
+  }, []);
 
   // Load initial tabs and watch for changes
   useEffect(() => {
@@ -126,7 +130,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
                   transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`,
                 }}
               >
-                <TabCard tab={tab} onClick={onTabClick} />
+                <TabCard tab={tab} onClick={onTabClick} onDelete={handleDelete} />
               </div>
             );
           })}

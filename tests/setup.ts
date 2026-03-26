@@ -100,4 +100,7 @@ if (!HTMLElement.prototype.releasePointerCapture) {
       set: vi.fn(() => Promise.resolve()),
     },
   },
+  downloads: {
+    download: vi.fn(() => Promise.resolve(1)),
+  },
 } as any;

@@ -23,6 +23,7 @@ export default defineConfig({
     alias: {
       '@': resolve(projectRoot),
       '~': resolve(projectRoot),
+      'wxt/sandbox': resolve(projectRoot, 'tests/__mocks__/wxt-sandbox.ts'),
     },
   },
 });

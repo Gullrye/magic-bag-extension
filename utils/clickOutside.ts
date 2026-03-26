@@ -6,7 +6,19 @@ export function useClickOutside(
 ) {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      if (!ref.current) {
+        return;
+      }
+
+      const target = event.target as Node | null;
+      const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
+      const clickedInside = (
+        (target ? ref.current.contains(target) : false)
+        || path.includes(ref.current)
+        || path.some((node) => node instanceof Node && ref.current?.contains(node))
+      );
+
+      if (!clickedInside) {
         callback();
       }
     };

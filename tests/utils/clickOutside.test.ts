@@ -45,6 +45,29 @@ describe('useClickOutside Hook', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
+    it('should not call callback for shadow-dom clicks when composedPath includes the ref', () => {
+      const callback = vi.fn();
+      const host = document.createElement('div');
+      const shadowRoot = host.attachShadow({ mode: 'open' });
+      const refElement = document.createElement('div');
+      refElement.id = 'inside-shadow';
+      shadowRoot.appendChild(refElement);
+      document.body.appendChild(host);
+
+      renderHook(() => useClickOutside({ current: refElement }, callback));
+
+      const event = new MouseEvent('mousedown', { bubbles: true, composed: true });
+      Object.defineProperty(event, 'target', { value: host, writable: false });
+      Object.defineProperty(event, 'composedPath', {
+        value: () => [refElement, shadowRoot, host, document.body, document, window],
+        writable: false,
+      });
+
+      document.dispatchEvent(event);
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+
     it('should cleanup event listener on unmount', () => {
       const callback = vi.fn();
       const removeSpy = vi.spyOn(document, 'removeEventListener');

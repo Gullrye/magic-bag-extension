@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infrastructure & Floating Icon** - Extension boots with WXT/React/TS, floating draggable icon on all pages (completed 2026-03-25)
 - [x] **Phase 2: Tab Collection & Display** - Context menu collection, chessboard grid display, tab restoration (completed 2026-03-25)
-- [ ] **Phase 3: Tab Management** - Delete, clear, reorder, and search tabs
+- [x] **Phase 3: Tab Management** - Delete, clear, reorder, and search tabs (completed 2026-03-26)
 - [ ] **Phase 4: Polish & Portability** - JSON export/import, Guofeng visual style
 
 ## Phase Details
@@ -80,9 +80,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Requirements**: ICON-04, PORT-01, PORT-02
 **Success Criteria** (what must be TRUE):
   1. User can export all tabs to a JSON file downloaded to their computer
-  2. User can import tabs from a JSON file with option to merge or replace existing tabs
+  2. User can import tabs from a JSON file with merge behavior (duplicates skipped)
   3. Floating icon displays Chinese traditional (国风) visual style with appropriate colors and design
-**Plans**: TBD
+**Plans**: 2 plans
+- [ ] [04-01-PLAN.md](./phases/04-polish-portability/04-01-PLAN.md) — Create options page with JSON export/import functionality (Wave 1)
+- [ ] [04-02-PLAN.md](./phases/04-polish-portability/04-02-PLAN.md) — Redesign floating icon with 国风 visual styling (Wave 1)
 **UI hint**: yes
 
 ## Progress
@@ -95,4 +97,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Infrastructure & Floating Icon | 5/5 | Complete   | 2026-03-25 |
 | 2. Tab Collection & Display | 6/6 | Complete   | 2026-03-25 |
 | 3. Tab Management | 6/6 | Complete | 2026-03-26 |
-| 4. Polish & Portability | 0/TBD | Not started | - |
+| 4. Polish & Portability | 0/2 | Not started | - |

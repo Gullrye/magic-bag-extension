@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { TabGrid } from '~/entrypoints/content/TabGrid';
 import { savedTabs, iconPosition } from '~/utils/storage';
 
@@ -78,9 +78,77 @@ describe('TabGrid', () => {
     expect(grid.className).toContain('border-amber-700');
   });
 
-  it.todo('filters tabs by title and URL using a search query');
-  it.todo('resets the search query when the grid is reopened');
-  it.todo('shows a no-results state when saved tabs exist but no search results match');
+  it('renders a search field in the grid header', async () => {
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    expect(await screen.findByPlaceholderText('搜索标题或网址')).toBeInTheDocument();
+  });
+
+  it('filters tabs by title and URL using a search query', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+      { url: 'https://docs.example.com/guide', title: 'Guide', timestamp: 2 },
+    ]);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    expect(await screen.findByText('Alpha Notes')).toBeInTheDocument();
+    expect(screen.getByText('Guide')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText('搜索标题或网址'), {
+      target: { value: 'ALPHA' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Alpha Notes')).toBeInTheDocument();
+      expect(screen.queryByText('Guide')).not.toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('搜索标题或网址'), {
+      target: { value: 'DOCS.EXAMPLE.COM' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Guide')).toBeInTheDocument();
+      expect(screen.queryByText('Alpha Notes')).not.toBeInTheDocument();
+    });
+  });
+
+  it('resets the search query when the grid is reopened', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+    ]);
+
+    const { rerender } = render(
+      <TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />
+    );
+
+    const searchInput = await screen.findByPlaceholderText('搜索标题或网址');
+    fireEvent.change(searchInput, { target: { value: 'alpha' } });
+    expect(searchInput).toHaveValue('alpha');
+
+    rerender(<TabGrid isOpen={false} onClose={vi.fn()} onTabClick={vi.fn()} />);
+    rerender(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    expect(await screen.findByPlaceholderText('搜索标题或网址')).toHaveValue('');
+  });
+
+  it('shows a no-results state when saved tabs exist but no search results match', async () => {
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+    ]);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    fireEvent.change(await screen.findByPlaceholderText('搜索标题或网址'), {
+      target: { value: 'missing' },
+    });
+
+    expect(await screen.findByText('未找到匹配的标签页')).toBeInTheDocument();
+    expect(screen.getByText('试试更换关键词，或清空搜索后查看全部标签')).toBeInTheDocument();
+    expect(screen.queryByText('Alpha Notes')).not.toBeInTheDocument();
+  });
+
   it.todo('opens a clear-all confirmation flow from the grid header');
   it.todo('supports drag-to-reorder interactions');
 });

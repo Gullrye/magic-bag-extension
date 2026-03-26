@@ -17,7 +17,7 @@
 - [ ] **ICON-01**: Floating icon displays on all web pages
 - [ ] **ICON-02**: Icon can be dragged to any of 4 screen edges (top/bottom/left/right)
 - [x] **ICON-03**: Icon position persists across page reloads and browser sessions
-- [ ] **ICON-04**: Icon uses Chinese traditional (国风) visual style
+- [x] **ICON-04**: Icon uses Chinese traditional (国风) visual style
 
 ### Tab Collection
 
@@ -43,8 +43,8 @@
 
 ### Data Portability
 
-- [ ] **PORT-01**: Export all tabs to JSON file
-- [ ] **PORT-02**: Import tabs from JSON file (merge or replace)
+- [x] **PORT-01**: Export all tabs to JSON file
+- [x] **PORT-02**: Import tabs from JSON file (merge or replace)
 
 ## v2 Requirements
 
@@ -82,7 +82,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ICON-01 | Phase 1 | Pending |
 | ICON-02 | Phase 1 | Pending |
 | ICON-03 | Phase 1 | Complete |
-| ICON-04 | Phase 4 | Pending |
+| ICON-04 | Phase 4 | Complete |
 | COLL-01 | Phase 2 | Complete |
 | COLL-02 | Phase 2 | Complete |
 | COLL-03 | Phase 2 | Complete |
@@ -96,8 +96,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MNGT-02 | Phase 3 | Complete |
 | MNGT-03 | Phase 3 | Complete |
 | MNGT-04 | Phase 3 | Complete |
-| PORT-01 | Phase 4 | Pending |
-| PORT-02 | Phase 4 | Pending |
+| PORT-01 | Phase 4 | Complete |
+| PORT-02 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 22 total

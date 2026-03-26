@@ -12,7 +12,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     include: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
-    exclude: ['node_modules', '.output', 'dist', '.worktrees', '.pnpm-store'],
+    exclude: ['node_modules', '.output', 'dist', '.worktrees', '.pnpm-store', '.claude/worktrees'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { TabGrid } from '~/entrypoints/content/TabGrid';
 import { savedTabs, iconPosition } from '~/utils/storage';
 
@@ -64,13 +64,23 @@ describe('TabGrid', () => {
     expect(container.firstChild).not.toBeNull();
   });
 
-  it('has correct styling classes', () => {
-    const { container } = render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+  it('has correct styling classes', async () => {
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
 
-    const grid = container.firstChild as HTMLElement;
+    const grid = await screen.findByRole('dialog', { name: '法宝袋' });
+    await waitFor(() => {
+      expect(grid.style.transformOrigin).toBe('100px 100px');
+    });
+
     expect(grid).toBeInTheDocument();
-    expect(grid?.className).toContain('fixed');
-    expect(grid?.className).toContain('bg-gray-500/95');
-    expect(grid?.className).toContain('border');
+    expect(grid.className).toContain('fixed');
+    expect(grid.className).toContain('bg-amber-50');
+    expect(grid.className).toContain('border-amber-700');
   });
+
+  it.todo('filters tabs by title and URL using a search query');
+  it.todo('resets the search query when the grid is reopened');
+  it.todo('shows a no-results state when saved tabs exist but no search results match');
+  it.todo('opens a clear-all confirmation flow from the grid header');
+  it.todo('supports drag-to-reorder interactions');
 });

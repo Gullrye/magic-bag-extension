@@ -131,3 +131,9 @@ describe('Storage Layer - Phase 2', () => {
     });
   });
 });
+
+describe('Storage Layer - Phase 3 Wave 0 Stubs', () => {
+  it.todo('clears all saved tabs with a dedicated helper');
+  it.todo('persists reordered saved tabs');
+  it.todo('preserves newest-first insertion for newly collected tabs after reorder support is added');
+});

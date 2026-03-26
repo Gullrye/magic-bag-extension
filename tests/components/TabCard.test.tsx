@@ -51,4 +51,7 @@ describe('TabCard', () => {
     const svg = document.querySelector('svg');
     expect(svg).toBeInTheDocument();
   });
+
+  it.todo('renders a delete affordance with an accessible label');
+  it.todo('does not call onClick when the delete affordance is pressed');
 });

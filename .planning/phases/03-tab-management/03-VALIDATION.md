@@ -1,9 +1,9 @@
 ---
 phase: 3
 slug: tab-management
-status: draft
+status: complete
 nyquist_compliant: true
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-03-26
 ---
 
@@ -38,16 +38,16 @@ created: 2026-03-26
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 03-01-01 | 01 | 1 | MNGT-01, MNGT-02 | unit | `pnpm test --run tests/storage.test.ts` | ✅ existing | ⬜ pending |
-| 03-01-02 | 01 | 1 | MNGT-03 | unit | `pnpm test --run tests/storage.test.ts` | ✅ existing | ⬜ pending |
-| 03-02-01 | 02 | 1 | MNGT-04 | unit | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ⬜ pending |
-| 03-02-02 | 02 | 1 | MNGT-04 | unit | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ⬜ pending |
-| 03-03-01 | 03 | 2 | MNGT-01 | unit | `pnpm test --run tests/components/TabCard.test.tsx` | ✅ existing | ⬜ pending |
-| 03-03-02 | 03 | 2 | MNGT-01 | integration | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ⬜ pending |
-| 03-04-01 | 04 | 3 | MNGT-02 | unit | `pnpm test --run tests/components/ConfirmDialog.test.tsx` | ❌ Wave 0 | ⬜ pending |
-| 03-04-02 | 04 | 3 | MNGT-02 | integration | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ⬜ pending |
-| 03-05-01 | 05 | 4 | MNGT-03 | unit | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ⬜ pending |
-| 03-05-02 | 05 | 4 | MNGT-03 | integration | `pnpm test --run tests/storage.test.ts tests/components/TabGrid.test.tsx` | ✅ existing | ⬜ pending |
+| 03-01-01 | 01 | 1 | MNGT-01, MNGT-02 | unit | `pnpm test --run tests/storage.test.ts` | ✅ existing | ✅ green |
+| 03-01-02 | 01 | 1 | MNGT-03 | unit | `pnpm test --run tests/storage.test.ts` | ✅ existing | ✅ green |
+| 03-02-01 | 02 | 1 | MNGT-04 | unit | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ✅ green |
+| 03-02-02 | 02 | 1 | MNGT-04 | unit | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ✅ green |
+| 03-03-01 | 03 | 2 | MNGT-01 | unit | `pnpm test --run tests/components/TabCard.test.tsx` | ✅ existing | ✅ green |
+| 03-03-02 | 03 | 2 | MNGT-01 | integration | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ✅ green |
+| 03-04-01 | 04 | 3 | MNGT-02 | unit | `pnpm test --run tests/components/ConfirmDialog.test.tsx` | ✅ Wave 0 | ✅ green |
+| 03-04-02 | 04 | 3 | MNGT-02 | integration | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ✅ green |
+| 03-05-01 | 05 | 4 | MNGT-03 | unit | `pnpm test --run tests/components/TabGrid.test.tsx` | ✅ existing | ✅ green |
+| 03-05-02 | 05 | 4 | MNGT-03 | integration | `pnpm test --run tests/storage.test.ts tests/components/TabGrid.test.tsx` | ✅ existing | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -55,11 +55,11 @@ created: 2026-03-26
 
 ## Wave 0 Requirements
 
-- [ ] `tests/setup.ts` — extend with any drag-and-drop test shims required by @dnd-kit
-- [ ] `tests/storage.test.ts` — add stubs for clear-all and reorder persistence
-- [ ] `tests/components/TabGrid.test.tsx` — add stubs for search, reset-on-open, clear-all, reorder
-- [ ] `tests/components/TabCard.test.tsx` — add stubs for delete affordance behavior
-- [ ] `tests/components/ConfirmDialog.test.tsx` — new test file for clear-all confirmation dialog
+- [x] `tests/setup.ts` — extended with drag-and-drop compatible pointer shims
+- [x] `tests/storage.test.ts` — extended for clear-all and reorder persistence
+- [x] `tests/components/TabGrid.test.tsx` — extended for search, reset-on-open, clear-all, reorder
+- [x] `tests/components/TabCard.test.tsx` — extended for delete affordance behavior
+- [x] `tests/components/ConfirmDialog.test.tsx` — created for clear-all confirmation dialog
 
 ---
 
@@ -76,11 +76,10 @@ created: 2026-03-26
 
 ## Validation Sign-Off
 
-- [ ] All plans have at least one narrow automated verification command
-- [ ] Wave 0 covers every new test surface before feature work
-- [ ] No three consecutive tasks rely only on manual checking
-- [ ] `nyquist_compliant: true` remains justified
-- [ ] Full suite passes before execution sign-off
+- [x] All plans have at least one narrow automated verification command
+- [x] Wave 0 covers every new test surface before feature work
+- [x] No three consecutive tasks rely only on manual checking
+- [x] `nyquist_compliant: true` remains justified
+- [x] Full suite passes before execution sign-off
 
-**Approval:** pending
-
+**Approval:** Automated verification complete on 2026-03-26. Manual browser verification remains recommended for release confidence.

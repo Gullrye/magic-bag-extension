@@ -47,7 +47,8 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Each tab in grid shows favicon and title
   5. Clicking a tab in grid opens the URL in a new browser tab
   6. Clicking outside the grid closes it
-**Plans**: 5 plans
+**Plans**: 6 plans
+- [x] [02-00-PLAN.md](./phases/02-tab-collection-display/02-00-PLAN.md) — Set up Phase 2 test infrastructure and Wave 0 validation
 - [x] [02-01-PLAN.md](./phases/02-tab-collection-display/02-01-PLAN.md) — Define SavedTab type and storage item with helper functions (Wave 1)
 - [x] [02-02-PLAN.md](./phases/02-tab-collection-display/02-02-PLAN.md) — Implement context menu integration and tab collection handler (Wave 1)
 - [x] [02-03-PLAN.md](./phases/02-tab-collection-display/02-03-PLAN.md) — Create TabCard and EmptyState components (Wave 2)
@@ -64,12 +65,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can clear all tabs at once with a single action
   3. User can drag tabs to reorder within the grid
   4. User can search tabs by title or URL to filter visible tabs
-**Plans**: 5 plans
-- [ ] [03-01-PLAN.md](./phases/03-tab-management/03-01-PLAN.md) — Extend storage helpers for clear-all and persistent reorder
-- [ ] [03-02-PLAN.md](./phases/03-tab-management/03-02-PLAN.md) — Add local search/filter UI to the bag grid
-- [ ] [03-03-PLAN.md](./phases/03-tab-management/03-03-PLAN.md) — Add explicit per-card delete action
-- [ ] [03-04-PLAN.md](./phases/03-tab-management/03-04-PLAN.md) — Add clear-all confirmation flow
-- [ ] [03-05-PLAN.md](./phases/03-tab-management/03-05-PLAN.md) — Implement drag-to-reorder with persistent order
+**Plans**: 6 plans
+- [x] [03-00-PLAN.md](./phases/03-tab-management/03-00-PLAN.md) — Add Wave 0 test scaffolding and worktree-safe baseline fixes
+- [x] [03-01-PLAN.md](./phases/03-tab-management/03-01-PLAN.md) — Extend storage helpers for clear-all and persistent reorder
+- [x] [03-02-PLAN.md](./phases/03-tab-management/03-02-PLAN.md) — Add local search/filter UI to the bag grid
+- [x] [03-03-PLAN.md](./phases/03-tab-management/03-03-PLAN.md) — Add explicit per-card delete action
+- [x] [03-04-PLAN.md](./phases/03-tab-management/03-04-PLAN.md) — Add clear-all confirmation flow
+- [x] [03-05-PLAN.md](./phases/03-tab-management/03-05-PLAN.md) — Implement drag-to-reorder with persistent order
 **UI hint**: yes
 
 ### Phase 4: Polish & Portability
@@ -91,6 +93,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure & Floating Icon | 5/5 | Complete   | 2026-03-25 |
-| 2. Tab Collection & Display | 5/5 | Complete   | 2026-03-25 |
-| 3. Tab Management | 0/5 (+ Wave 0 support) | Planned | - |
+| 2. Tab Collection & Display | 6/6 | Complete   | 2026-03-25 |
+| 3. Tab Management | 6/6 | Complete | 2026-03-26 |
 | 4. Polish & Portability | 0/TBD | Not started | - |

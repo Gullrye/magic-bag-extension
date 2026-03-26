@@ -4,10 +4,6 @@
 
 **Core Value:** 一键收纳标签页，让浏览器保持清爽。
 
-## Phase 1: Infrastructure & Floating Icon
-
-This phase establishes the extension infrastructure and floating draggable icon.
-
 ### Setup
 
 1. **Install dependencies:**
@@ -26,39 +22,14 @@ pnpm build
    - Click "Load unpacked"
    - Select the `magic-bag/.output/chrome-mv3` directory
 
-### Testing
-
-**Smoke Test:**
-1. Visit any website (e.g., https://example.com)
-2. Verify the floating icon appears in the bottom-right corner
-3. Verify the icon is a 48x48px gray circle with shadow
-
-**Drag Test:**
-1. Drag the icon to each edge (top, right, bottom, left)
-2. Release within 50px of an edge
-3. Verify the icon snaps to that edge
-4. Verify visual feedback during drag (blue color, enhanced shadow, cursor change)
-
-**Persistence Test:**
-1. Drag icon to a new position
-2. Reload the page (F5)
-3. Verify icon position is preserved
-4. Restart Edge browser
-5. Verify icon position is still preserved
-
-**CSS Isolation Test:**
-1. Visit complex websites (Gmail, Facebook, Reddit)
-2. Verify icon appearance is consistent across all sites
-3. Inspect element and verify Shadow DOM isolation
-4. Verify host page CSS doesn't affect the icon
-
 ### Tech Stack
 
 - **WXT 0.20.20** - Extension build framework
-- **React 19.2.4** - UI framework
+- **React 18.3.1** - UI framework
 - **TypeScript 5.x** - Type safety
 - **Tailwind CSS** - Styling (inside Shadow DOM)
 - **react-draggable 4.5.0** - Drag behavior
+- **@dnd-kit** - Drag-to-reorder for saved tabs
 - **Manifest V3** - Chrome extension standard
 
 ### Architecture
@@ -66,7 +37,9 @@ pnpm build
 - `entrypoints/background.ts` - Service worker for privileged APIs
 - `entrypoints/content/index.tsx` - Content script with Shadow DOM UI
 - `entrypoints/content/BagIcon.tsx` - Floating draggable icon component
-- `utils/storage.ts` - WXT storage module for position persistence
+- `entrypoints/content/TabGrid.tsx` - Saved tab panel with search, clear-all, and reorder
+- `entrypoints/content/ConfirmDialog.tsx` - Bulk clear confirmation dialog
+- `utils/storage.ts` - WXT storage module for icon position and saved tabs
 - `utils/drag.ts` - Edge-snapping drag utilities
 
 ### Current Status
@@ -78,7 +51,28 @@ pnpm build
 - [x] Edge snapping behavior
 - [x] Position persistence
 
-**Next Phase:** Tab Collection & Display (Phase 2)
+**Phase 2 (Tab Collection & Display):** ✅ Complete
+- [x] Context menu tab collection
+- [x] Chessboard-style tab panel
+- [x] Tab reopen flow
+- [x] Toast feedback and duplicate handling
+
+**Phase 3 (Tab Management):** ✅ Complete
+- [x] Search by title or URL
+- [x] Delete individual saved tabs
+- [x] Clear all with confirmation
+- [x] Drag to reorder saved tabs
+
+**Next Phase:** Polish & Portability (Phase 4)
+
+### Manual Verification
+
+1. Load the extension in Edge from `.output/chrome-mv3`
+2. Open the bag and confirm search input focus no longer closes the panel
+3. Search by title or URL and verify filtering updates in place
+4. Delete a tab and verify it disappears without opening
+5. Click `清空`, cancel once, confirm once
+6. Drag to reorder tabs and verify order persists after reopening the panel
 
 ## Development
 
@@ -86,8 +80,8 @@ pnpm build
 # Development mode with HMR
 pnpm dev
 
-# Type checking
-pnpm tsc --noEmit
+# Test suite
+pnpm test --run
 
 # Build for production
 pnpm build

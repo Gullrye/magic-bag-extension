@@ -36,10 +36,10 @@
 
 ### Tab Management
 
-- [ ] **MNGT-01**: Delete individual tabs from grid
-- [ ] **MNGT-02**: Clear all tabs at once
-- [ ] **MNGT-03**: Drag tabs to reorder within grid
-- [ ] **MNGT-04**: Search tabs by title or URL
+- [x] **MNGT-01**: Delete individual tabs from grid
+- [x] **MNGT-02**: Clear all tabs at once
+- [x] **MNGT-03**: Drag tabs to reorder within grid
+- [x] **MNGT-04**: Search tabs by title or URL
 
 ### Data Portability
 
@@ -92,10 +92,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GRID-03 | Phase 2 | Complete |
 | GRID-04 | Phase 2 | Complete |
 | GRID-05 | Phase 2 | Complete |
-| MNGT-01 | Phase 3 | Pending |
-| MNGT-02 | Phase 3 | Pending |
-| MNGT-03 | Phase 3 | Pending |
-| MNGT-04 | Phase 3 | Pending |
+| MNGT-01 | Phase 3 | Complete |
+| MNGT-02 | Phase 3 | Complete |
+| MNGT-03 | Phase 3 | Complete |
+| MNGT-04 | Phase 3 | Complete |
 | PORT-01 | Phase 4 | Pending |
 | PORT-02 | Phase 4 | Pending |
 

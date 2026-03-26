@@ -1,7 +1,50 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { TabGrid } from '~/entrypoints/content/TabGrid';
-import { clearTabs, iconPosition, removeTab, savedTabs } from '~/utils/storage';
+import { clearTabs, iconPosition, removeTab, reorderTabs, savedTabs } from '~/utils/storage';
+
+const dndContextState: {
+  onDragEnd?: (event: { active: { id: string }; over: { id: string } | null }) => void | Promise<void>;
+} = {};
+
+vi.mock('@dnd-kit/core', () => ({
+  DndContext: ({ children, onDragEnd }: { children: React.ReactNode; onDragEnd?: typeof dndContextState.onDragEnd }) => {
+    dndContextState.onDragEnd = onDragEnd;
+    return <div data-testid="dnd-context">{children}</div>;
+  },
+  PointerSensor: class PointerSensor {},
+  KeyboardSensor: class KeyboardSensor {},
+  closestCenter: vi.fn(),
+  useSensor: vi.fn((sensor: unknown, config: unknown) => ({ sensor, config })),
+  useSensors: vi.fn((...sensors: unknown[]) => sensors),
+}));
+
+vi.mock('@dnd-kit/sortable', () => ({
+  SortableContext: ({ children }: { children: React.ReactNode }) => <div data-testid="sortable-context">{children}</div>,
+  arrayMove: (items: unknown[], oldIndex: number, newIndex: number) => {
+    const nextItems = [...items];
+    const [movedItem] = nextItems.splice(oldIndex, 1);
+    nextItems.splice(newIndex, 0, movedItem);
+    return nextItems;
+  },
+  rectSortingStrategy: vi.fn(),
+  useSortable: ({ id }: { id: string }) => ({
+    attributes: { 'data-sortable-id': id },
+    listeners: {},
+    setNodeRef: vi.fn(),
+    transform: null,
+    transition: undefined,
+    isDragging: false,
+  }),
+}));
+
+vi.mock('@dnd-kit/utilities', () => ({
+  CSS: {
+    Transform: {
+      toString: () => undefined,
+    },
+  },
+}));
 
 // Mock storage
 vi.mock('~/utils/storage', () => ({
@@ -14,6 +57,7 @@ vi.mock('~/utils/storage', () => ({
   },
   clearTabs: vi.fn(),
   removeTab: vi.fn(),
+  reorderTabs: vi.fn(),
 }));
 
 // Mock useClickOutside
@@ -32,6 +76,8 @@ describe('TabGrid', () => {
     (clearTabs as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
     (iconPosition.getValue as ReturnType<typeof vi.fn>).mockResolvedValue({ x: 100, y: 100, edge: 'bottom' });
     (removeTab as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
+    (reorderTabs as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
+    dndContextState.onDragEnd = undefined;
   });
 
   it('calls savedTabs.getValue on mount', () => {
@@ -244,5 +290,34 @@ describe('TabGrid', () => {
     expect(screen.getByText('Alpha Notes')).toBeInTheDocument();
   });
 
-  it.todo('supports drag-to-reorder interactions');
+  it('supports drag-to-reorder interactions', async () => {
+    const initialTabs = [
+      { url: 'https://alpha.dev', title: 'Alpha Notes', timestamp: 1 },
+      { url: 'https://docs.example.com/guide', title: 'Guide', timestamp: 2 },
+    ];
+
+    (savedTabs.getValue as ReturnType<typeof vi.fn>).mockResolvedValue(initialTabs);
+
+    render(<TabGrid isOpen={true} onClose={vi.fn()} onTabClick={vi.fn()} />);
+
+    expect(await screen.findByText('Alpha Notes')).toBeInTheDocument();
+    expect(dndContextState.onDragEnd).toEqual(expect.any(Function));
+
+    await dndContextState.onDragEnd?.({
+      active: { id: 'https://alpha.dev' },
+      over: { id: 'https://docs.example.com/guide' },
+    });
+
+    await waitFor(() => {
+      expect(reorderTabs).toHaveBeenCalledWith([
+        initialTabs[1],
+        initialTabs[0],
+      ]);
+    });
+
+    expect(screen.getAllByText(/Alpha Notes|Guide/).map((node) => node.textContent)).toEqual([
+      'Guide',
+      'Alpha Notes',
+    ]);
+  });
 });

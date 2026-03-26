@@ -64,7 +64,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can clear all tabs at once with a single action
   3. User can drag tabs to reorder within the grid
   4. User can search tabs by title or URL to filter visible tabs
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] [03-01-PLAN.md](./phases/03-tab-management/03-01-PLAN.md) — Extend storage helpers for clear-all and persistent reorder
+- [ ] [03-02-PLAN.md](./phases/03-tab-management/03-02-PLAN.md) — Add local search/filter UI to the bag grid
+- [ ] [03-03-PLAN.md](./phases/03-tab-management/03-03-PLAN.md) — Add explicit per-card delete action
+- [ ] [03-04-PLAN.md](./phases/03-tab-management/03-04-PLAN.md) — Add clear-all confirmation flow
+- [ ] [03-05-PLAN.md](./phases/03-tab-management/03-05-PLAN.md) — Implement drag-to-reorder with persistent order
 **UI hint**: yes
 
 ### Phase 4: Polish & Portability
@@ -87,5 +92,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Infrastructure & Floating Icon | 5/5 | Complete   | 2026-03-25 |
 | 2. Tab Collection & Display | 5/5 | Complete   | 2026-03-25 |
-| 3. Tab Management | 0/TBD | Not started | - |
+| 3. Tab Management | 0/5 (+ Wave 0 support) | Planned | - |
 | 4. Polish & Portability | 0/TBD | Not started | - |

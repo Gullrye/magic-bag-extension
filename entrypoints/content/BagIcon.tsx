@@ -4,13 +4,18 @@ import { iconPosition } from '~/utils/storage';
 import { snapToEdge, clampToBounds } from '~/utils/drag';
 import type { IconPosition } from './types';
 
-export default function BagIcon() {
+interface BagIconProps {
+  onToggleGrid?: () => void;
+}
+
+export default function BagIcon({ onToggleGrid }: BagIconProps) {
   const [position, setPosition] = useState<IconPosition>({
     x: 20,
     y: window.innerHeight - 68,
     edge: 'bottom',
   });
   const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   // Load saved position on mount (ICON-03: position persists)
   useEffect(() => {
@@ -22,8 +27,9 @@ export default function BagIcon() {
   }, []);
 
   // Handle drag start
-  const handleStart = useCallback(() => {
+  const handleStart = useCallback((e: any, data: any) => {
     setIsDragging(true);
+    setDragOffset({ x: data.x, y: data.y });
   }, []);
 
   // Handle drag - just update visual state
@@ -73,7 +79,17 @@ export default function BagIcon() {
       onStop={handleStop}
       bounds="parent" // Constrain to viewport
     >
-      <div style={iconStyle}>
+      <div
+        style={iconStyle}
+        onClick={(e) => {
+          // Only toggle grid if not dragging (position didn't change significantly)
+          const wasDragged = Math.abs(position.x - dragOffset.x) > 5 ||
+                            Math.abs(position.y - dragOffset.y) > 5;
+          if (!wasDragged) {
+            onToggleGrid?.();
+          }
+        }}
+      >
         {/* Placeholder: Phase 4 will add 国风 icon design */}
         {/* For now, simple circle with visual feedback */}
       </div>

@@ -2,7 +2,78 @@ import './style.css';
 import ReactDOM from 'react-dom/client';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
+import { useState, useEffect, useCallback } from 'react';
 import BagIcon from './BagIcon';
+import { TabGrid } from './TabGrid';
+import { Toast } from './Toast';
+
+interface ToastState {
+  visible: boolean;
+  message: string;
+  type: 'success' | 'warning';
+}
+
+// Main app component that manages state
+function MagicBagApp() {
+  const [isGridOpen, setIsGridOpen] = useState(false);
+  const [toast, setToast] = useState<ToastState>({ visible: false, message: '', type: 'success' });
+
+  // Handle tab click - open URL in new tab (GRID-04)
+  const handleTabClick = useCallback((url: string) => {
+    // Send message to background script to open tab
+    chrome.runtime.sendMessage({ type: 'open-tab', url });
+  }, []);
+
+  // Toggle grid open/closed (GRID-01)
+  const toggleGrid = useCallback(() => {
+    setIsGridOpen((prev) => !prev);
+  }, []);
+
+  // Handle grid close
+  const handleGridClose = useCallback(() => {
+    setIsGridOpen(false);
+  }, []);
+
+  // Handle toast close
+  const handleToastClose = useCallback(() => {
+    setToast((prev) => ({ ...prev, visible: false }));
+  }, []);
+
+  // Listen for toast messages from background script
+  useEffect(() => {
+    const handleMessage = (message: any) => {
+      if (message.type === 'success-toast') {
+        setToast({ visible: true, message: '已收入法宝袋', type: 'success' });
+      } else if (message.type === 'duplicate-warning') {
+        setToast({ visible: true, message: '该标签页已在法宝袋中', type: 'warning' });
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(handleMessage);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, []);
+
+  return (
+    <>
+      <BagIcon onToggleGrid={toggleGrid} />
+      <TabGrid
+        isOpen={isGridOpen}
+        onClose={handleGridClose}
+        onTabClick={handleTabClick}
+      />
+      {toast.visible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={handleToastClose}
+        />
+      )}
+    </>
+  );
+}
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -19,9 +90,9 @@ export default defineContentScript({
         app.className = 'magic-bag-container';
         container.append(app);
 
-        // Render BagIcon component
+        // Render MagicBagApp component with all integrations
         const root = ReactDOM.createRoot(app);
-        root.render(<BagIcon />);
+        root.render(<MagicBagApp />);
 
         return root;
       },

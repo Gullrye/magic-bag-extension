@@ -13,7 +13,7 @@ Build a Chromium/Edge browser extension that lets users collect open tabs into a
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infrastructure & Floating Icon** - Extension boots with WXT/React/TS, floating draggable icon on all pages (completed 2026-03-25)
-- [ ] **Phase 2: Tab Collection & Display** - Context menu collection, chessboard grid display, tab restoration
+- [x] **Phase 2: Tab Collection & Display** - Context menu collection, chessboard grid display, tab restoration (completed 2026-03-25)
 - [ ] **Phase 3: Tab Management** - Delete, clear, reorder, and search tabs
 - [ ] **Phase 4: Polish & Portability** - JSON export/import, Guofeng visual style
 
@@ -48,11 +48,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. Clicking a tab in grid opens the URL in a new browser tab
   6. Clicking outside the grid closes it
 **Plans**: 5 plans
-- [ ] [02-01-PLAN.md](./phases/02-tab-collection-display/02-01-PLAN.md) — Define SavedTab type and storage item with helper functions (Wave 1)
-- [ ] [02-02-PLAN.md](./phases/02-tab-collection-display/02-02-PLAN.md) — Implement context menu integration and tab collection handler (Wave 1)
-- [ ] [02-03-PLAN.md](./phases/02-tab-collection-display/02-03-PLAN.md) — Create TabCard and EmptyState components (Wave 2)
-- [ ] [02-04-PLAN.md](./phases/02-tab-collection-display/02-04-PLAN.md) — Create TabGrid, Toast, and useClickOutside hook (Wave 2)
-- [ ] [02-05-PLAN.md](./phases/02-tab-collection-display/02-05-PLAN.md) — Integrate all components in content script with tab restoration (Wave 3)
+- [x] [02-01-PLAN.md](./phases/02-tab-collection-display/02-01-PLAN.md) — Define SavedTab type and storage item with helper functions (Wave 1)
+- [x] [02-02-PLAN.md](./phases/02-tab-collection-display/02-02-PLAN.md) — Implement context menu integration and tab collection handler (Wave 1)
+- [x] [02-03-PLAN.md](./phases/02-tab-collection-display/02-03-PLAN.md) — Create TabCard and EmptyState components (Wave 2)
+- [x] [02-04-PLAN.md](./phases/02-tab-collection-display/02-04-PLAN.md) — Create TabGrid, Toast, and useClickOutside hook (Wave 2)
+- [x] [02-05-PLAN.md](./phases/02-tab-collection-display/02-05-PLAN.md) — Integrate all components in content script with tab restoration (Wave 3)
 **UI hint**: yes
 
 ### Phase 3: Tab Management
@@ -86,6 +86,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure & Floating Icon | 5/5 | Complete   | 2026-03-25 |
-| 2. Tab Collection & Display | 0/5 | Not started | - |
+| 2. Tab Collection & Display | 5/5 | Complete   | 2026-03-25 |
 | 3. Tab Management | 0/TBD | Not started | - |
 | 4. Polish & Portability | 0/TBD | Not started | - |

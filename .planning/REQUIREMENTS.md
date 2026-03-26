@@ -21,18 +21,18 @@
 
 ### Tab Collection
 
-- [ ] **COLL-01**: Right-click context menu option "收入法宝袋" on any page
-- [ ] **COLL-02**: Current tab URL, title, and favicon captured and stored
-- [ ] **COLL-03**: Original tab auto-closes after collection
-- [ ] **COLL-04**: Tab data persists in chrome.storage.local
+- [x] **COLL-01**: Right-click context menu option "收入法宝袋" on any page
+- [x] **COLL-02**: Current tab URL, title, and favicon captured and stored
+- [x] **COLL-03**: Original tab auto-closes after collection
+- [x] **COLL-04**: Tab data persists in chrome.storage.local
 
 ### Chessboard Display
 
-- [ ] **GRID-01**: Clicking icon reveals tabs in chessboard grid layout
-- [ ] **GRID-02**: Grid spreads from icon position toward opposite edge
-- [ ] **GRID-03**: Each tab shows favicon + title
-- [ ] **GRID-04**: Clicking a tab opens the URL in new tab
-- [ ] **GRID-05**: Clicking outside grid closes it
+- [x] **GRID-01**: Clicking icon reveals tabs in chessboard grid layout
+- [x] **GRID-02**: Grid spreads from icon position toward opposite edge
+- [x] **GRID-03**: Each tab shows favicon + title
+- [x] **GRID-04**: Clicking a tab opens the URL in new tab
+- [x] **GRID-05**: Clicking outside grid closes it
 
 ### Tab Management
 
@@ -83,15 +83,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ICON-02 | Phase 1 | Pending |
 | ICON-03 | Phase 1 | Complete |
 | ICON-04 | Phase 4 | Pending |
-| COLL-01 | Phase 2 | Pending |
-| COLL-02 | Phase 2 | Pending |
-| COLL-03 | Phase 2 | Pending |
-| COLL-04 | Phase 2 | Pending |
-| GRID-01 | Phase 2 | Pending |
-| GRID-02 | Phase 2 | Pending |
-| GRID-03 | Phase 2 | Pending |
-| GRID-04 | Phase 2 | Pending |
-| GRID-05 | Phase 2 | Pending |
+| COLL-01 | Phase 2 | Complete |
+| COLL-02 | Phase 2 | Complete |
+| COLL-03 | Phase 2 | Complete |
+| COLL-04 | Phase 2 | Complete |
+| GRID-01 | Phase 2 | Complete |
+| GRID-02 | Phase 2 | Complete |
+| GRID-03 | Phase 2 | Complete |
+| GRID-04 | Phase 2 | Complete |
+| GRID-05 | Phase 2 | Complete |
 | MNGT-01 | Phase 3 | Pending |
 | MNGT-02 | Phase 3 | Pending |
 | MNGT-03 | Phase 3 | Pending |

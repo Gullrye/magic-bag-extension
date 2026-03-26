@@ -11,3 +11,10 @@ export interface DragState {
   initialX: number;
   initialY: number;
 }
+
+export interface SavedTab {
+  url: string;
+  title: string;
+  favicon?: string;
+  timestamp: number;
+}

@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { savedTabs, addTab, hasDuplicateUrl, removeTab } from '~/utils/storage';
+import type { SavedTab } from '~/entrypoints/content/types';
 
 describe('Storage Utilities', () => {
   describe('INFR-04: unlimitedStorage permission requested', () => {
@@ -63,6 +65,69 @@ describe('Storage Utilities', () => {
       // Test stub: Will test storage versioning
       // Implementation will verify version: 1 configuration
       expect(true).toBe(true);
+    });
+  });
+});
+
+describe('Storage Layer - Phase 2', () => {
+  describe('SavedTab type and storage item', () => {
+    it('should have savedTabs storage item with empty array fallback', async () => {
+      const tabs = await savedTabs.getValue();
+      expect(Array.isArray(tabs)).toBe(true);
+      expect(tabs).toHaveLength(0);
+    });
+
+    it('should use WXT storage.defineItem with version 1', () => {
+      expect(savedTabs).toBeDefined();
+    });
+  });
+
+  describe('Tab Storage Operations (COLL-04)', () => {
+    it('should store tab data with URL, title, favicon, timestamp', async () => {
+      const tab: SavedTab = {
+        url: 'https://example.com',
+        title: 'Example',
+        favicon: 'https://example.com/favicon.ico',
+        timestamp: Date.now(),
+      };
+
+      await savedTabs.setValue([tab]);
+      const stored = await savedTabs.getValue();
+      expect(stored).toHaveLength(1);
+      expect(stored[0].url).toBe('https://example.com');
+      expect(stored[0].title).toBe('Example');
+    });
+
+    it('should prevent duplicate URLs', async () => {
+      const tab: SavedTab = {
+        url: 'https://example.com',
+        title: 'Example',
+        timestamp: Date.now(),
+      };
+
+      const result1 = await addTab(tab);
+      const result2 = await addTab(tab);
+
+      expect(result1).toBe(true);
+      expect(result2).toBe(false); // Duplicate rejected
+    });
+
+    it('should maintain newest-first order', async () => {
+      const now = Date.now();
+      const tab1: SavedTab = { url: 'https://first.com', title: 'First', timestamp: now - 2000 };
+      const tab2: SavedTab = { url: 'https://second.com', title: 'Second', timestamp: now - 1000 };
+      const tab3: SavedTab = { url: 'https://third.com', title: 'Third', timestamp: now };
+
+      // Add via addTab to test newest-first ordering
+      await addTab(tab1);
+      await addTab(tab2);
+      await addTab(tab3);
+
+      const stored = await savedTabs.getValue();
+      expect(stored).toHaveLength(3);
+      expect(stored[0].url).toBe('https://third.com'); // Most recent
+      expect(stored[1].url).toBe('https://second.com');
+      expect(stored[2].url).toBe('https://first.com'); // Oldest
     });
   });
 });

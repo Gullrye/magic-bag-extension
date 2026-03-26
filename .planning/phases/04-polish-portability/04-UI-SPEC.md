@@ -1,10 +1,11 @@
 ---
 phase: 4
 slug: polish-portability
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-03-26
+reviewed_at: 2026-03-27
 ---
 
 # Phase 4 — UI Design Contract
@@ -44,31 +45,29 @@ Inherited from Phase 3 (must be multiples of 4):
 **Options page additions:**
 - Page padding: 24px
 - Section gap: 24px
-- Button spacing: 12px between adjacent buttons
+- Button spacing: 16px between adjacent buttons
 - Form label-to-input gap: 8px
 
 Exceptions:
 - Icon size remains 48x48px (from Phase 1)
-- Touch targets minimum 44x44px for buttons
+- Touch targets minimum 48x48px for buttons (exceeds 44px accessibility minimum)
 
 ---
 
 ## Typography
 
-Inherited from Phase 3:
+Inherited from Phase 3 (reduced to 2 weights for consistency):
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px | 400 | 1.5 |
-| Label | 12px | 500 | 1.4 |
+| Label | 12px | 400 | 1.4 |
 | Heading | 16px | 600 | 1.2 |
-| Display | 24px | 700 | 1.1 |
+| Display | 24px | 600 | 1.1 |
 
 **Phase 4 usage:**
-- Body (14px): options page description, button labels
-- Label (12px): form field labels, metadata
-- Heading (16px): options page section titles
-- Display (24px): options page main title
+- Body/Label (400): options page description, button labels, form field labels
+- Heading/Display (600): options page section titles, main title
 
 ---
 
@@ -190,7 +189,7 @@ Phase 4 does not use any component registry blocks. All UI components remain man
 - Each section: white surface with subtle border, rounded corners (12px), padding 24px
 - Section title: 16px semibold, amber-900
 - Section description: 14px regular, gray-600, margin-bottom 16px
-- Buttons: primary blue for main actions, minimum 44px height
+- Buttons: primary blue for main actions, minimum 48px height
 
 **Layout structure:**
 ```
@@ -270,14 +269,14 @@ Phase 4 does not use any component registry blocks. All UI components remain man
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved (2026-03-27)
 
 ---
 

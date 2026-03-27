@@ -172,7 +172,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       role="dialog"
       aria-label="法宝袋"
     >
-      <div className="mb-6 flex items-center gap-3">
+      <div className="sticky top-0 z-10 bg-amber-50 pb-6 flex items-center gap-3">
         <label className="sr-only" htmlFor="magic-bag-search">
           搜索标题或网址
         </label>

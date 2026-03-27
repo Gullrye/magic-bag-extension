@@ -156,7 +156,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   return (
     <div
       ref={gridRef}
-      className="fixed bg-amber-50 border-2 border-amber-700 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.25)] p-8 w-[80vw] h-[70vh] overflow-auto z-[2147483646]"
+      className="fixed bg-amber-50 border-2 border-amber-700 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.25)] w-[80vw] h-[70vh] overflow-hidden z-[2147483646]"
       style={{
         // GRID-02: Transform origin from floating icon position
         // This creates the "expands from icon" visual effect
@@ -172,7 +172,8 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       role="dialog"
       aria-label="法宝袋"
     >
-      <div className="sticky top-0 z-10 bg-amber-50 pb-6 flex items-center gap-3">
+      {/* Sticky header - outside scroll area */}
+      <div className="sticky top-0 z-10 bg-amber-50 px-8 pt-8 pb-6 flex items-center gap-3">
         <label className="sr-only" htmlFor="magic-bag-search">
           搜索标题或网址
         </label>
@@ -204,16 +205,18 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
         ) : null}
       </div>
 
-      {tabs.length === 0 ? (
-        <EmptyState />
-      ) : filteredTabs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-12 text-center text-gray-700">
-          <p className="text-[16px] font-semibold text-amber-900">未找到匹配的标签页</p>
-          <p className="max-w-sm text-[14px] leading-[1.5] text-gray-600">
-            试试更换关键词，或清空搜索后查看全部标签
-          </p>
-        </div>
-      ) : isReorderEnabled ? (
+      {/* Scrollable content area */}
+      <div className="overflow-auto h-[calc(70vh-88px)] px-8 pb-8">
+        {tabs.length === 0 ? (
+          <EmptyState />
+        ) : filteredTabs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-12 text-center text-gray-700">
+            <p className="text-[16px] font-semibold text-amber-900">未找到匹配的标签页</p>
+            <p className="max-w-sm text-[14px] leading-[1.5] text-gray-600">
+              试试更换关键词，或清空搜索后查看全部标签
+            </p>
+          </div>
+        ) : isReorderEnabled ? (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={tabs.map((tab) => tab.url)} strategy={rectSortingStrategy}>
             <div className="flex flex-wrap gap-6 justify-start content-start">
@@ -257,6 +260,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
           })}
         </div>
       )}
+      </div>
 
       <ConfirmDialog
         isOpen={isConfirmOpen}

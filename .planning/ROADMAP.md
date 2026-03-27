@@ -98,3 +98,13 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Tab Collection & Display | 6/6 | Complete   | 2026-03-25 |
 | 3. Tab Management | 6/6 | Complete | 2026-03-26 |
 | 4. Polish & Portability | 0/2 | Not started | - |
+
+### Phase 5: 标签面板ui优化
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 4
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 5 to break down)

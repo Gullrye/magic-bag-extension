@@ -292,14 +292,14 @@ export function PopupPage() {
               {t('popupSyncHint')}
             </p>
             <div className="popup-card__actions">
-              <button type="button" onClick={handleBindSyncFile} className="popup-card__button">
-                {t('popupSyncBind')}
+              <button type="button" onClick={handleExportToSyncFile} className="popup-card__button">
+                {t('popupSyncExport')}
               </button>
               <button type="button" onClick={handleImportFromSyncFile} className="popup-card__button popup-card__button--secondary">
                 {t('popupSyncImport')}
               </button>
-              <button type="button" onClick={handleExportToSyncFile} className="popup-card__button popup-card__button--secondary">
-                {t('popupSyncExport')}
+              <button type="button" onClick={handleBindSyncFile} className="popup-card__text-action">
+                {syncFileName ? t('popupSyncChangeFile') : t('popupSyncBind')}
               </button>
             </div>
           </article>

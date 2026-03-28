@@ -7,6 +7,7 @@ const HANDLE_KEY = 'sync-json-file';
 declare global {
   interface Window {
     showOpenFilePicker?: (options?: Record<string, unknown>) => Promise<FileSystemFileHandle[]>;
+    showSaveFilePicker?: (options?: Record<string, unknown>) => Promise<FileSystemFileHandle>;
   }
 }
 
@@ -79,7 +80,6 @@ async function ensurePermission(handle: SyncFileHandle, mode: SyncPermissionMode
 function getPickerOptions() {
   return {
     excludeAcceptAllOption: false,
-    multiple: false,
     types: [
       {
         description: 'Magic Bag Sync File',
@@ -104,16 +104,22 @@ function normalizeImportedTabs(value: unknown): SavedTab[] {
 }
 
 export async function bindSyncFile(): Promise<string> {
-  if (!window.showOpenFilePicker) {
+  if (!window.showSaveFilePicker) {
     throw createError('SYNC_UNSUPPORTED', 'File System Access API is not supported');
   }
 
-  const [handle] = await window.showOpenFilePicker(getPickerOptions());
+  const handle = await window.showSaveFilePicker({
+    ...getPickerOptions(),
+    suggestedName: 'magic-bag-sync.json',
+  });
   if (!handle) {
     throw createError('SYNC_PICKER_CANCELLED', 'No sync file selected');
   }
 
   await ensurePermission(handle, 'readwrite');
+  const writable = await handle.createWritable();
+  await writable.write(JSON.stringify([], null, 2));
+  await writable.close();
   await setStoredHandle(handle);
   return handle.name;
 }

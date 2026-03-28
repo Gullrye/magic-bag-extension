@@ -42,7 +42,7 @@ describe('PopupPage', () => {
 
     it('renders export and import sections', () => {
       render(<PopupPage />);
-      expect(screen.getByText('同步文件')).toBeInTheDocument();
+      expect(screen.getByText('本地备份')).toBeInTheDocument();
       expect(screen.getByText('导出标签页')).toBeInTheDocument();
       expect(screen.getByText('导入标签页')).toBeInTheDocument();
     });
@@ -145,11 +145,11 @@ describe('PopupPage', () => {
       const { bindSyncFile } = await import('~/utils/fileSync');
       render(<PopupPage />);
 
-      fireEvent.click(screen.getByRole('button', { name: '绑定 JSON 文件' }));
+      fireEvent.click(screen.getByRole('button', { name: '开启本地备份' }));
 
       await waitFor(() => {
         expect(bindSyncFile).toHaveBeenCalled();
-        expect(screen.getByText('已绑定同步文件：magic-bag-sync.json')).toBeInTheDocument();
+        expect(screen.getByText('已开启本地备份：magic-bag-sync.json')).toBeInTheDocument();
       });
     });
 
@@ -158,7 +158,7 @@ describe('PopupPage', () => {
       vi.mocked(addTab).mockResolvedValue(true);
 
       render(<PopupPage />);
-      fireEvent.click(screen.getByRole('button', { name: '从同步文件导入' }));
+      fireEvent.click(screen.getByRole('button', { name: '从备份恢复' }));
 
       await waitFor(() => {
         expect(addTab).toHaveBeenCalledWith({
@@ -177,7 +177,7 @@ describe('PopupPage', () => {
       ]);
 
       render(<PopupPage />);
-      fireEvent.click(screen.getByRole('button', { name: '导出到同步文件' }));
+      fireEvent.click(screen.getByRole('button', { name: '更新本地备份' }));
 
       await waitFor(() => {
         expect(exportTabsToBoundFile).toHaveBeenCalledWith([

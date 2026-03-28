@@ -241,8 +241,19 @@ body {
   line-height: 1.45;
 }
 
-.popup-card__button {
+.popup-card__body--muted {
+  margin-top: 4px;
+  color: rgba(110, 91, 73, 0.82);
+}
+
+.popup-card__actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
   margin-top: 10px;
+}
+
+.popup-card__button {
   color: #fff4e6;
   background: linear-gradient(180deg, #8d3029 0%, #651816 100%);
   box-shadow: 0 16px 24px rgba(64, 21, 14, 0.16);

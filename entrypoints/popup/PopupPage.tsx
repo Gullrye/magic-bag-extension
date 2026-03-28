@@ -2,6 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { addTab, localePreference, savedTabs } from '~/utils/storage';
 import type { SavedTab } from '~/entrypoints/content/types';
 import { setRuntimeLocalePreference, t, type LocalePreference } from '~/utils/i18n';
+import {
+  bindSyncFile,
+  exportTabsToBoundFile,
+  getSyncFileName,
+  importTabsFromBoundFile,
+} from '~/utils/fileSync';
 
 type ToastType = 'success' | 'warning';
 
@@ -14,6 +20,7 @@ interface ToastState {
 export function PopupPage() {
   const [toast, setToast] = useState<ToastState>({ visible: false, message: '', type: 'success' });
   const [locale, setLocale] = useState<LocalePreference>('system');
+  const [syncFileName, setSyncFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -28,6 +35,10 @@ export function PopupPage() {
     });
 
     return () => unwatch();
+  }, []);
+
+  useEffect(() => {
+    getSyncFileName().then(setSyncFileName).catch(() => setSyncFileName(null));
   }, []);
 
   const handleLocaleChange = async (preference: LocalePreference) => {
@@ -137,6 +148,84 @@ export function PopupPage() {
     fileInputRef.current?.click();
   };
 
+  const importTabs = async (
+    tabs: SavedTab[],
+    buildSuccessMessage: (importedCount: number) => string,
+  ) => {
+    let importedCount = 0;
+
+    for (const tab of tabs) {
+      if (!tab.url || !tab.title) continue;
+      const added = await addTab(tab);
+      if (added) importedCount++;
+    }
+
+    showToast(buildSuccessMessage(importedCount), 'success');
+  };
+
+  const handleBindSyncFile = async () => {
+    try {
+      const fileName = await bindSyncFile();
+      setSyncFileName(fileName);
+      showToast(t('popupSyncBindSuccess', { fileName }), 'success');
+    } catch (error) {
+      const code = error instanceof Error ? error.name : 'SYNC_ERROR';
+      if (code === 'AbortError' || code === 'SYNC_PICKER_CANCELLED') {
+        return;
+      }
+      if (code === 'SYNC_UNSUPPORTED') {
+        showToast(t('popupSyncUnsupported'), 'warning');
+        return;
+      }
+      if (code === 'SYNC_PERMISSION_DENIED') {
+        showToast(t('popupSyncPermissionDenied'), 'warning');
+        return;
+      }
+      showToast(t('popupSyncActionError'), 'warning');
+    }
+  };
+
+  const handleImportFromSyncFile = async () => {
+    try {
+      const tabs = await importTabsFromBoundFile();
+      await importTabs(tabs, (count) => t('popupSyncImportSuccess', { count }));
+    } catch (error) {
+      const code = error instanceof Error ? error.name : 'SYNC_ERROR';
+      if (code === 'SYNC_NOT_BOUND') {
+        showToast(t('popupSyncNeedBind'), 'warning');
+        return;
+      }
+      if (code === 'SYNC_PERMISSION_DENIED') {
+        showToast(t('popupSyncPermissionDenied'), 'warning');
+        return;
+      }
+      if (code === 'SYNC_INVALID_FORMAT' || error instanceof SyntaxError) {
+        showToast(t('popupSyncInvalidFile'), 'warning');
+        return;
+      }
+      showToast(t('popupSyncActionError'), 'warning');
+    }
+  };
+
+  const handleExportToSyncFile = async () => {
+    try {
+      const tabs = await savedTabs.getValue();
+      await exportTabsToBoundFile(tabs);
+      showToast(t('popupSyncExportSuccess', { count: tabs.length }), 'success');
+    } catch (error) {
+      const code = error instanceof Error ? error.name : 'SYNC_ERROR';
+      if (code === 'SYNC_NOT_BOUND') {
+        showToast(t('popupSyncNeedBind'), 'warning');
+        return;
+      }
+      if (code === 'SYNC_PERMISSION_DENIED') {
+        showToast(t('popupSyncPermissionDenied'), 'warning');
+        return;
+      }
+      showToast(t('popupSyncActionError'), 'warning');
+    }
+  };
+
   return (
     <main className="popup-page">
       <div className="popup-page__grain" aria-hidden="true" />
@@ -191,6 +280,30 @@ export function PopupPage() {
         </header>
 
         <section className="popup-page__grid">
+          <article className="popup-card">
+            <p className="popup-card__eyebrow">{t('popupSyncEyebrow')}</p>
+            <h2 className="popup-card__title">{t('popupSyncTitle')}</h2>
+            <p className="popup-card__body">
+              {syncFileName
+                ? t('popupSyncBound', { fileName: syncFileName })
+                : t('popupSyncUnbound')}
+            </p>
+            <p className="popup-card__body popup-card__body--muted">
+              {t('popupSyncHint')}
+            </p>
+            <div className="popup-card__actions">
+              <button type="button" onClick={handleBindSyncFile} className="popup-card__button">
+                {t('popupSyncBind')}
+              </button>
+              <button type="button" onClick={handleImportFromSyncFile} className="popup-card__button popup-card__button--secondary">
+                {t('popupSyncImport')}
+              </button>
+              <button type="button" onClick={handleExportToSyncFile} className="popup-card__button popup-card__button--secondary">
+                {t('popupSyncExport')}
+              </button>
+            </div>
+          </article>
+
           <article className="popup-card">
             <p className="popup-card__eyebrow">{t('popupExportEyebrow')}</p>
             <h2 className="popup-card__title">{t('popupExportTitle')}</h2>

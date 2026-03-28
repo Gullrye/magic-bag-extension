@@ -14,6 +14,15 @@ vi.mock('~/utils/storage', () => ({
   },
 }));
 
+vi.mock('~/utils/fileSync', () => ({
+  bindSyncFile: vi.fn(() => Promise.resolve('magic-bag-sync.json')),
+  getSyncFileName: vi.fn(() => Promise.resolve(null)),
+  importTabsFromBoundFile: vi.fn(() => Promise.resolve([
+    { url: 'https://sync.com', title: 'Synced Tab', timestamp: 4000 },
+  ])),
+  exportTabsToBoundFile: vi.fn(() => Promise.resolve()),
+}));
+
 describe('PopupPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -33,6 +42,7 @@ describe('PopupPage', () => {
 
     it('renders export and import sections', () => {
       render(<PopupPage />);
+      expect(screen.getByText('同步文件')).toBeInTheDocument();
       expect(screen.getByText('导出标签页')).toBeInTheDocument();
       expect(screen.getByText('导入标签页')).toBeInTheDocument();
     });
@@ -126,6 +136,53 @@ describe('PopupPage', () => {
           type: 'set-locale-preference',
           preference: 'en',
         });
+      });
+    });
+  });
+
+  describe('Sync File', () => {
+    it('binds a sync file from popup', async () => {
+      const { bindSyncFile } = await import('~/utils/fileSync');
+      render(<PopupPage />);
+
+      fireEvent.click(screen.getByRole('button', { name: '绑定 JSON 文件' }));
+
+      await waitFor(() => {
+        expect(bindSyncFile).toHaveBeenCalled();
+        expect(screen.getByText('已绑定同步文件：magic-bag-sync.json')).toBeInTheDocument();
+      });
+    });
+
+    it('imports tabs from the bound sync file', async () => {
+      const { addTab } = await import('~/utils/storage');
+      vi.mocked(addTab).mockResolvedValue(true);
+
+      render(<PopupPage />);
+      fireEvent.click(screen.getByRole('button', { name: '从同步文件导入' }));
+
+      await waitFor(() => {
+        expect(addTab).toHaveBeenCalledWith({
+          url: 'https://sync.com',
+          title: 'Synced Tab',
+          timestamp: 4000,
+        });
+      });
+    });
+
+    it('exports tabs to the bound sync file', async () => {
+      const { savedTabs } = await import('~/utils/storage');
+      const { exportTabsToBoundFile } = await import('~/utils/fileSync');
+      vi.mocked(savedTabs.getValue).mockResolvedValue([
+        { url: 'https://example.com', title: 'Example', timestamp: 1000 },
+      ]);
+
+      render(<PopupPage />);
+      fireEvent.click(screen.getByRole('button', { name: '导出到同步文件' }));
+
+      await waitFor(() => {
+        expect(exportTabsToBoundFile).toHaveBeenCalledWith([
+          { url: 'https://example.com', title: 'Example', timestamp: 1000 },
+        ]);
       });
     });
   });

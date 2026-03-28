@@ -79,3 +79,35 @@ export function clampToBounds(
     y: Math.max(bounds.top, Math.min(bounds.bottom, y)),
   };
 }
+
+/**
+ * Refit a saved icon position back into the current viewport.
+ * Preserve snapped-edge intent when possible so resize/zoom does not
+ * leave the trigger outside the visible area.
+ */
+export function refitToViewport(position: IconPosition): IconPosition {
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const maxX = Math.max(0, viewportWidth - ICON_SIZE - EDGE_PADDING);
+  const maxY = Math.max(0, viewportHeight - ICON_SIZE - EDGE_PADDING);
+
+  let nextX = position.x;
+  let nextY = position.y;
+
+  if (position.edge === 'left') {
+    nextX = EDGE_PADDING;
+  } else if (position.edge === 'right') {
+    nextX = maxX;
+  } else if (position.edge === 'top') {
+    nextY = EDGE_PADDING;
+  } else if (position.edge === 'bottom') {
+    nextY = maxY;
+  }
+
+  const clamped = clampToBounds(nextX, nextY);
+  return {
+    x: clamped.x,
+    y: clamped.y,
+    edge: position.edge,
+  };
+}

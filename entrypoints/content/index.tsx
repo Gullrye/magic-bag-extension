@@ -80,6 +80,12 @@ export default defineContentScript({
   cssInjectionMode: 'ui', // CRITICAL: Enables Shadow DOM style injection (INFR-02)
 
   async main(ctx) {
+    // Skip standalone SVG/image documents. The extension UI expects a normal HTML page
+    // and should not inject into local asset previews or image documents.
+    if (!document.body || document.contentType === 'image/svg+xml') {
+      return;
+    }
+
     const ui = await createShadowRootUi(ctx, {
       name: 'magic-bag',
       position: 'inline',

@@ -3,6 +3,7 @@ import {
   closestCenter,
   DndContext,
   PointerSensor,
+  type DragEndEvent,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -16,8 +17,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { clearTabs, iconPosition, removeTab, reorderTabs, savedTabs } from '~/utils/storage';
 import { useClickOutside } from '~/utils/clickOutside';
 import { ConfirmDialog } from './ConfirmDialog';
-import { TabCard } from './TabCard';
 import { EmptyState } from './EmptyState';
+import { TabCard } from './TabCard';
 import type { SavedTab } from './types';
 
 interface TabGridProps {
@@ -71,6 +72,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   const [tabs, setTabs] = useState<SavedTab[]>([]);
   const [iconPos, setIconPos] = useState({ x: 0, y: 0 });
   const gridRef = useRef<HTMLDivElement>(null);
+
   const filteredTabs = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     if (!normalizedQuery) {
@@ -82,16 +84,19 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       || tab.url.toLowerCase().includes(normalizedQuery)
     ));
   }, [tabs, query]);
+
   const handleDelete = useCallback(async (url: string) => {
     await removeTab(url);
     setTabs((currentTabs) => currentTabs.filter((tab) => tab.url !== url));
   }, []);
+
   const handleConfirmClear = useCallback(async () => {
     await clearTabs();
     setTabs([]);
     setQuery('');
     setIsConfirmOpen(false);
   }, []);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -99,16 +104,21 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       },
     }),
   );
+
   const isReorderEnabled = query.trim().length === 0;
-  const handleDragEnd = useCallback(async (event: { active: { id: string }; over: { id: string } | null }) => {
+
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (!over || active.id === over.id || !isReorderEnabled) {
       return;
     }
 
-    const oldIndex = tabs.findIndex((tab) => tab.url === active.id);
-    const newIndex = tabs.findIndex((tab) => tab.url === over.id);
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    const oldIndex = tabs.findIndex((tab) => tab.url === activeId);
+    const newIndex = tabs.findIndex((tab) => tab.url === overId);
 
     if (oldIndex < 0 || newIndex < 0) {
       return;
@@ -119,7 +129,6 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
     await reorderTabs(reorderedTabs);
   }, [isReorderEnabled, tabs]);
 
-  // Load initial tabs and watch for changes
   useEffect(() => {
     savedTabs.getValue().then(setTabs);
     const unwatch = savedTabs.watch(setTabs);
@@ -132,141 +141,151 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
     }
   }, [isOpen]);
 
-  // Load icon position for transform-origin (GRID-02 implementation)
   useEffect(() => {
     iconPosition.getValue().then((pos) => {
       setIconPos({ x: pos.x, y: pos.y });
     });
   }, []);
 
-  // Click outside to close (GRID-05)
   useClickOutside(gridRef, onClose);
 
-  // Escape key to close
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
     };
+
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
+
+  const resultCountLabel = query.trim()
+    ? `检得 ${filteredTabs.length} 项`
+    : `共藏 ${tabs.length} 项`;
 
   return (
     <div
       ref={gridRef}
-      className="fixed bg-amber-50 border-2 border-amber-700 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.25)] w-[80vw] h-[70vh] overflow-hidden z-[2147483646]"
+      className="magic-bag-panel"
       style={{
-        // GRID-02: Transform origin from floating icon position
-        // This creates the "expands from icon" visual effect
         transformOrigin: `${iconPos.x}px ${iconPos.y}px`,
         animation: 'gridOpen 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        // 棋盘纹理背景
-        backgroundImage: `
-          linear-gradient(rgba(139, 90, 43, 0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(139, 90, 43, 0.1) 1px, transparent 1px)
-        `,
-        backgroundSize: '40px 40px',
       }}
       role="dialog"
       aria-label="法宝袋"
     >
-      {/* Sticky header - outside scroll area */}
-      <div className="sticky top-0 z-10 bg-amber-50 px-8 pt-8 pb-6 flex items-center gap-3">
-        <label className="sr-only" htmlFor="magic-bag-search">
-          搜索标题或网址
-        </label>
-        <div className="relative flex-1">
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-amber-700/80">
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </span>
-          <input
-            id="magic-bag-search"
-            type="text"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="搜索标题或网址"
-            className="h-11 w-full rounded-[10px] border border-amber-700/30 bg-white/95 pl-11 pr-4 text-[14px] text-gray-700 outline-none transition-colors focus:border-blue-500"
-          />
-        </div>
+      <div className="magic-bag-panel__surface">
+        <div className="magic-bag-panel__ornament" aria-hidden="true" />
 
-        {tabs.length > 0 ? (
-          <button
-            type="button"
-            onClick={() => setIsConfirmOpen(true)}
-            className="h-11 shrink-0 rounded-lg border border-amber-700/40 bg-white/90 px-4 text-[14px] font-medium text-amber-900"
-          >
-            清空
-          </button>
-        ) : null}
-      </div>
-
-      {/* Scrollable content area */}
-      <div className="overflow-auto h-[calc(70vh-88px)] px-8 pb-8">
-        {tabs.length === 0 ? (
-          <EmptyState />
-        ) : filteredTabs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-12 text-center text-gray-700">
-            <p className="text-[16px] font-semibold text-amber-900">未找到匹配的标签页</p>
-            <p className="max-w-sm text-[14px] leading-[1.5] text-gray-600">
-              试试更换关键词，或清空搜索后查看全部标签
+        <header className="magic-bag-panel__header">
+          <div className="magic-bag-panel__title-group">
+            <p className="magic-bag-panel__eyebrow">法宝袋</p>
+            <h2 className="magic-bag-panel__title">藏页匣</h2>
+            <p className="magic-bag-panel__description">
+              收拢当下分心的页面，像题签一样安稳归档。
             </p>
           </div>
-        ) : isReorderEnabled ? (
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={tabs.map((tab) => tab.url)} strategy={rectSortingStrategy}>
-            <div className="flex flex-wrap gap-6 justify-start content-start">
-              {tabs.map((tab, index) => {
-                // 棋子散落效果：轻微随机偏移
-                const offsetX = (index % 5) * 8;
-                const offsetY = Math.floor(index / 5) * 6;
-                const rotate = ((index % 7) - 3) * 1.5; // 轻微旋转
+
+          <div className="magic-bag-panel__controls">
+            <label className="magic-bag-search" htmlFor="magic-bag-search">
+              <span className="magic-bag-search__icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </span>
+              <input
+                id="magic-bag-search"
+                type="text"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="检索标题或网址"
+                className="magic-bag-search__input"
+              />
+            </label>
+
+            <div className="magic-bag-panel__actions">
+              <span className="magic-bag-panel__counter">{resultCountLabel}</span>
+              {tabs.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setIsConfirmOpen(true)}
+                  className="magic-bag-panel__clear"
+                >
+                  清匣
+                </button>
+              ) : null}
+            </div>
+          </div>
+        </header>
+
+        <div className="magic-bag-panel__body">
+          {tabs.length === 0 ? (
+            <EmptyState />
+          ) : filteredTabs.length === 0 ? (
+            <div className="magic-bag-empty">
+              <p className="magic-bag-empty__title">未检得相符藏页</p>
+              <p className="magic-bag-empty__body">
+                换一个关键词试试，或清空检索后查看全部收纳。
+              </p>
+            </div>
+          ) : isReorderEnabled ? (
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={tabs.map((tab) => tab.url)} strategy={rectSortingStrategy}>
+                <div className="magic-bag-grid">
+                  {tabs.map((tab, index) => {
+                    const offsetX = (index % 4) * 6;
+                    const offsetY = Math.floor(index / 4) * 4;
+                    const rotate = ((index % 5) - 2) * 0.8;
+
+                    return (
+                      <SortableTabCard
+                        key={tab.url}
+                        offsetX={offsetX}
+                        offsetY={offsetY}
+                        onDelete={handleDelete}
+                        onTabClick={onTabClick}
+                        rotate={rotate}
+                        tab={tab}
+                      />
+                    );
+                  })}
+                </div>
+              </SortableContext>
+            </DndContext>
+          ) : (
+            <div className="magic-bag-grid">
+              {filteredTabs.map((tab, index) => {
+                const offsetX = (index % 4) * 6;
+                const offsetY = Math.floor(index / 4) * 4;
+                const rotate = ((index % 5) - 2) * 0.8;
+
                 return (
-                  <SortableTabCard
+                  <div
                     key={tab.url}
-                    offsetX={offsetX}
-                    offsetY={offsetY}
-                    onDelete={handleDelete}
-                    onTabClick={onTabClick}
-                    rotate={rotate}
-                    tab={tab}
-                  />
+                    style={{
+                      transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`,
+                    }}
+                  >
+                    <TabCard tab={tab} onClick={onTabClick} onDelete={handleDelete} />
+                  </div>
                 );
               })}
             </div>
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <div className="flex flex-wrap gap-6 justify-start content-start">
-          {filteredTabs.map((tab, index) => {
-            // 棋子散落效果：轻微随机偏移
-            const offsetX = (index % 5) * 8;
-            const offsetY = Math.floor(index / 5) * 6;
-            const rotate = ((index % 7) - 3) * 1.5; // 轻微旋转
-            return (
-              <div
-                key={tab.url}
-                style={{
-                  transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`,
-                }}
-              >
-                <TabCard tab={tab} onClick={onTabClick} onDelete={handleDelete} />
-              </div>
-            );
-          })}
+          )}
         </div>
-      )}
       </div>
 
       <ConfirmDialog
         isOpen={isConfirmOpen}
         title="清空法宝袋？"
         message="这会移除所有已收纳标签页，且无法撤销。"
-        confirmText="确认清空"
+        confirmText="确认清匣"
         cancelText="取消"
         onConfirm={handleConfirmClear}
         onCancel={() => setIsConfirmOpen(false)}

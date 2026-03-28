@@ -23,14 +23,14 @@ export function Toast({ message, type, onClose }: ToastProps) {
 
   if (!visible) return null;
 
-  const bgColor = type === 'success' ? 'bg-blue-500' : 'bg-red-500';
-
   return (
     <div
-      className={`fixed top-5 left-1/2 -translate-x-1/2 ${bgColor} text-white px-3 py-2 rounded-lg text-[12px] font-medium shadow-[0_4px_12px_rgba(0,0,0,0.15)] z-[2147483647]`}
+      className="magic-bag-toast"
+      data-type={type}
       style={{ animation: 'toastFadeIn 150ms ease-out' }}
     >
-      {message}
+      <span className="magic-bag-toast__dot" aria-hidden="true" />
+      <span>{message}</span>
     </div>
   );
 }

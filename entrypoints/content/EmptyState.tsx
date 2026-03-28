@@ -2,10 +2,11 @@ import React from 'react';
 
 export function EmptyState() {
   return (
-    <div className="flex items-center justify-center py-12 px-6">
-      <div className="bg-gray-400/90 text-white px-4 py-2 rounded-lg text-[14px] font-medium shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
-        法宝袋是空的
-      </div>
+    <div className="magic-bag-empty">
+      <p className="magic-bag-empty__title">匣中暂无藏页</p>
+      <p className="magic-bag-empty__body">
+        在任意页面点击法宝袋，即可把眼前页签收入此匣，稍后再慢慢翻看。
+      </p>
     </div>
   );
 }

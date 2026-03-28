@@ -24,29 +24,30 @@ export function ConfirmDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/40 p-4">
+    <div className="magic-bag-dialog-backdrop">
       <div
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="magic-bag-confirm-title"
-        className="w-full max-w-sm rounded-xl bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
+        className="magic-bag-dialog"
       >
-        <h2 id="magic-bag-confirm-title" className="mb-2 text-[16px] font-semibold text-gray-900">
+        <p className="magic-bag-dialog__eyebrow">谨慎操作</p>
+        <h2 id="magic-bag-confirm-title" className="magic-bag-dialog__title">
           {title}
         </h2>
-        <p className="mb-5 text-[14px] leading-[1.5] text-gray-600">{message}</p>
-        <div className="flex justify-end gap-3">
+        <p className="magic-bag-dialog__body">{message}</p>
+        <div className="magic-bag-dialog__actions">
           <button
             type="button"
             onClick={onCancel}
-            className="h-11 rounded-lg border border-gray-300 px-4 text-[14px] font-medium text-gray-700"
+            className="magic-bag-dialog__button magic-bag-dialog__button--secondary"
           >
             {cancelText}
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="h-11 rounded-lg bg-red-600 px-4 text-[14px] font-medium text-white"
+            className="magic-bag-dialog__button magic-bag-dialog__button--danger"
           >
             {confirmText}
           </button>

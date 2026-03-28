@@ -137,3 +137,54 @@
 ## Deferred Ideas
 
 None — discussion stayed within phase scope.
+
+---
+
+## 2026-03-28 Restyle Decisions
+
+### Overall Direction
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| 国风器物感 | 像卷轴、漆匣、法器的收藏系统 | ✓ |
+| 赛博收藏柜 | 更现代、冷冽、发光 | |
+| 杂志编辑感 | 强排版、策展感 | |
+
+**User's choice:** 国风器物感
+
+### Emotional Tone
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| 沉稳珍藏 | 深漆红、旧金、宣纸暖底，克制高级 | ✓ |
+| 灵气法器 | 朱砂、墨黑、玉石青，略带神秘感 | |
+| 宫廷雅玩 | 更明亮、更华贵、更装饰性 | |
+
+**User's choice:** 沉稳珍藏
+
+### Structural Freedom
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| 全量重做 | 允许调整布局、信息层级、按钮位置 | ✓ |
+| 中度重做 | 局部重排，保留主体结构 | |
+| 仅换皮 | 尽量不动结构，只改视觉 | |
+
+**User's choice:** 全量重做
+
+### Recommended Concept
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| 漆匣法宝袋 | 面板像展开的漆匣，最强产品记忆点 | ✓ |
+| 卷轴式目录 | 更文气、更轻 | |
+| 书房案头 | 更稳，更像收纳托盘 | |
+
+**Selected approach:** 漆匣法宝袋
+
+### Follow-up Constraints Added During Execution
+
+- Desktop grid should show 6 cards per row
+- Panel internal shell must not overflow and get clipped
+- Scrolling panel content must not scroll the host webpage
+- Floating trigger must refit into viewport after zoom/resize

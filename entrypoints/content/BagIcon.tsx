@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Draggable from 'react-draggable';
 import { iconPosition } from '~/utils/storage';
-import { snapToEdge, clampToBounds } from '~/utils/drag';
+import { snapToEdge, clampToBounds, refitToViewport } from '~/utils/drag';
 import type { IconPosition } from './types';
 
 interface BagIconProps {
@@ -22,9 +22,36 @@ export default function BagIcon({ onToggleGrid }: BagIconProps) {
   useEffect(() => {
     iconPosition.getValue().then((saved) => {
       if (saved) {
-        setPosition(saved);
+        const refitted = refitToViewport(saved);
+        setPosition(refitted);
+
+        if (refitted.x !== saved.x || refitted.y !== saved.y) {
+          iconPosition.setValue(refitted);
+        }
       }
     });
+  }, []);
+
+  useEffect(() => {
+    const handleViewportChange = () => {
+      setPosition((current) => {
+        const refitted = refitToViewport(current);
+
+        if (refitted.x !== current.x || refitted.y !== current.y) {
+          iconPosition.setValue(refitted);
+        }
+
+        return refitted;
+      });
+    };
+
+    window.addEventListener('resize', handleViewportChange);
+    window.visualViewport?.addEventListener('resize', handleViewportChange);
+
+    return () => {
+      window.removeEventListener('resize', handleViewportChange);
+      window.visualViewport?.removeEventListener('resize', handleViewportChange);
+    };
   }, []);
 
   // Handle drag start
@@ -82,6 +109,9 @@ export default function BagIcon({ onToggleGrid }: BagIconProps) {
     >
       <div
         style={wrapperStyle}
+        className="magic-bag-trigger"
+        data-dragging={isDragging ? 'true' : 'false'}
+        data-hovered={isHovered ? 'true' : 'false'}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={(e) => {
@@ -96,6 +126,8 @@ export default function BagIcon({ onToggleGrid }: BagIconProps) {
         tabIndex={0}
         aria-label="法宝袋 - 点击查看已收纳的标签页"
       >
+        <div className="magic-bag-trigger__halo" aria-hidden="true" />
+        <div className="magic-bag-trigger__badge" aria-hidden="true">藏</div>
         {/* Chinese traditional pouch (法宝袋) SVG icon */}
         <svg
           viewBox="0 0 48 48"

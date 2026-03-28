@@ -10,6 +10,7 @@ interface CustomMatchers {
   toHaveFocus(): Assertion;
   toHaveTextContent(text: string | RegExp): Assertion;
   toHaveStyle(css: Record<string, any>): Assertion;
+  toHaveValue(value?: string | string[] | number): Assertion;
 }
 
 declare module 'vitest' {

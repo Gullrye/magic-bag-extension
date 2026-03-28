@@ -81,70 +81,65 @@ export function OptionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-amber-50 p-6">
-      <div className="max-w-[480px] mx-auto">
-        <h1 className="text-2xl font-semibold mb-6 text-gray-900">法宝袋设置</h1>
-
-        {/* Export Section */}
-        <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-amber-700/20">
-          <h2 className="text-base font-semibold text-amber-900 mb-2">导出标签页</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            将所有已收纳的标签页导出为 JSON 文件，可用于备份或迁移。
+    <main className="options-page">
+      <div className="options-page__grain" aria-hidden="true" />
+      <div className="options-page__shell">
+        <header className="options-page__hero">
+          <p className="options-page__eyebrow">法宝袋设置</p>
+          <h1 className="options-page__title">藏阁整备</h1>
+          <p className="options-page__lead">
+            统一整理你的收纳记录。导出做备份，导入做迁移，让法宝袋始终像一只井然有序的漆匣。
           </p>
-          <button
-            onClick={handleExport}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-medium min-h-[48px] transition-colors"
-          >
-            导出 JSON
-          </button>
-        </div>
+        </header>
 
-        {/* Import Section */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-amber-700/20">
-          <h2 className="text-base font-semibold text-amber-900 mb-2">导入标签页</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            从 JSON 文件导入标签页。导入的标签会添加到现有标签中，重复的网址会被跳过。
+        <section className="options-page__grid">
+          <article className="options-card">
+            <p className="options-card__eyebrow">备份</p>
+            <h2 className="options-card__title">导出标签页</h2>
+            <p className="options-card__body">
+              将所有已收纳的标签页导出为 JSON 文件，可用于备份或迁移。
+            </p>
+            <button onClick={handleExport} className="options-card__button">
+              导出 JSON
+            </button>
+          </article>
+
+          <article className="options-card">
+            <p className="options-card__eyebrow">归档</p>
+            <h2 className="options-card__title">导入标签页</h2>
+            <p className="options-card__body">
+              从 JSON 文件导入标签页。导入的标签会添加到现有标签中，重复的网址会被跳过。
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleImport}
+              className="hidden"
+            />
+            <button
+              onClick={handleSelectFile}
+              className="options-card__button options-card__button--secondary"
+            >
+              选择文件
+            </button>
+          </article>
+        </section>
+
+        <section className="options-note">
+          <p className="options-note__label">说明</p>
+          <p className="options-note__body">
+            导入与导出仅处理法宝袋的标签页数据，不会修改浏览器中当前已打开的标签页。
           </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            onChange={handleImport}
-            className="hidden"
-          />
-          <button
-            onClick={handleSelectFile}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-medium min-h-[48px] transition-colors"
-          >
-            选择文件
-          </button>
-        </div>
-
-        {/* Toast */}
-        {toast.visible && (
-          <div
-            className={`fixed top-5 left-1/2 -translate-x-1/2 ${
-              toast.type === 'success' ? 'bg-blue-500' : 'bg-red-500'
-            } text-white px-3 py-2 rounded-lg text-sm font-medium shadow-lg`}
-            style={{ animation: 'toastFadeIn 150ms ease-out' }}
-          >
-            {toast.message}
-          </div>
-        )}
+        </section>
       </div>
 
-      <style>{`
-        @keyframes toastFadeIn {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-          }
-        }
-      `}</style>
-    </div>
+      {toast.visible && (
+        <div className="options-toast" data-type={toast.type}>
+          <span className="options-toast__dot" aria-hidden="true" />
+          <span>{toast.message}</span>
+        </div>
+      )}
+    </main>
   );
 }

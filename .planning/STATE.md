@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: Milestone complete
 stopped_at: Phase 5 UI-SPEC approved
-last_updated: "2026-03-27T15:09:36.882Z"
+last_updated: "2026-03-28T17:21:00.000Z"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -86,6 +86,14 @@ None yet.
 ### Blockers/Concerns
 
 None yet.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260328-nzx | 当前浏览器插件的展示支持中文和英文两种，然后README.md支持中英文 | 2026-03-28 | 374e1b8 | [260328-nzx-readme-md](./quick/260328-nzx-readme-md/) |
+
+Last activity: 2026-03-28 - Completed quick task 260328-nzx: 当前浏览器插件的展示支持中文和英文两种，然后README.md支持中英文
 
 ### Roadmap Evolution
 

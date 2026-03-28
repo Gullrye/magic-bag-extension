@@ -46,6 +46,8 @@ function MagicBagApp() {
         setToast({ visible: true, message: '已收入法宝袋', type: 'success' });
       } else if (message.type === 'duplicate-warning') {
         setToast({ visible: true, message: '该标签页已在法宝袋中', type: 'warning' });
+      } else if (message.type === 'open-grid') {
+        setIsGridOpen(true);
       }
     };
 

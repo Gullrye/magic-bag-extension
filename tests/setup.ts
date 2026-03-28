@@ -48,6 +48,7 @@ if (!HTMLElement.prototype.releasePointerCapture) {
     onMessage: {
       addListener: vi.fn(),
     },
+    sendMessage: vi.fn(),
     getManifest: vi.fn(() => ({
       manifest_version: 3,
       name: '法宝袋',

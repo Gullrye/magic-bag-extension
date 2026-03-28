@@ -22,12 +22,32 @@ export default defineBackground(() => {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'open-tab' && message.url) {
       chrome.tabs.create({ url: message.url });
+      return;
+    }
+
+    if (message.type === 'collect-current-tab') {
+      void (async () => {
+        const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+        if (!activeTab?.id || !activeTab.url) {
+          sendResponse({ status: 'missing-tab' });
+          return;
+        }
+
+        const added = await collectTab(activeTab);
+        sendResponse({ status: added ? 'success' : 'duplicate' });
+      })().catch((error) => {
+        console.debug('Collect current tab failed:', error);
+        sendResponse({ status: 'error' });
+      });
+
+      return true;
     }
   });
 });
 
-export async function collectTab(tab: chrome.tabs.Tab) {
-  if (!tab.url || !tab.id) return;
+export async function collectTab(tab: chrome.tabs.Tab): Promise<boolean> {
+  if (!tab.url || !tab.id) return false;
 
   // Capture tab data (per CONTEXT.md D-08)
   const tabData: SavedTab = {
@@ -62,4 +82,6 @@ export async function collectTab(tab: chrome.tabs.Tab) {
       console.debug('Warning toast not sent:', error);
     }
   }
+
+  return added;
 }

@@ -14,6 +14,26 @@ export function PopupPage() {
   const [toast, setToast] = useState<ToastState>({ visible: false, message: '', type: 'success' });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleCollectCurrentTab = async () => {
+    try {
+      const response = await chrome.runtime.sendMessage({ type: 'collect-current-tab' });
+
+      if (response?.status === 'success') {
+        showToast('已收入法宝袋，会关闭当前标签页', 'success');
+        return;
+      }
+
+      if (response?.status === 'duplicate') {
+        showToast('当前标签页已在法宝袋中', 'warning');
+        return;
+      }
+
+      showToast('当前页面暂时无法收入法宝袋', 'warning');
+    } catch (error) {
+      showToast('当前页面暂时无法收入法宝袋', 'warning');
+    }
+  };
+
   const showToast = (message: string, type: ToastType) => {
     setToast({ visible: true, message, type });
     setTimeout(() => {
@@ -100,9 +120,15 @@ export function PopupPage() {
           <p className="popup-page__lead">
             常用操作在此即开即用，当前页主面板也可以直接唤起。
           </p>
-          <button type="button" onClick={handleShowPanel} className="popup-page__primary">
-            展示面板
-          </button>
+          <div className="popup-page__hero-actions">
+            <button type="button" onClick={handleCollectCurrentTab} className="popup-page__primary">
+              <span className="popup-page__primary-label">将标签页收入法宝袋</span>
+              <span className="popup-page__primary-badge">关闭当前页</span>
+            </button>
+            <button type="button" onClick={handleShowPanel} className="popup-page__secondary">
+              展示面板
+            </button>
+          </div>
         </header>
 
         <section className="popup-page__grid">

@@ -15,12 +15,14 @@ describe('PopupPage', () => {
     (globalThis as any).chrome.downloads.download = vi.fn().mockResolvedValue(1);
     (globalThis as any).chrome.tabs.query = vi.fn().mockResolvedValue([{ id: 123 }]);
     (globalThis as any).chrome.tabs.sendMessage = vi.fn().mockResolvedValue(undefined);
+    (globalThis as any).chrome.runtime.sendMessage = vi.fn().mockResolvedValue({ status: 'success' });
   });
 
   describe('UI Rendering', () => {
     it('renders popup title and primary action', () => {
       render(<PopupPage />);
       expect(screen.getByText('藏阁整备')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: '将标签页收入法宝袋' })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: '展示面板' })).toBeInTheDocument();
     });
 
@@ -63,6 +65,30 @@ describe('PopupPage', () => {
 
       await waitFor(() => {
         expect(screen.getByText('当前页面暂时无法展示面板')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Collect Current Tab', () => {
+    it('requests background to collect the current tab', async () => {
+      render(<PopupPage />);
+
+      fireEvent.click(screen.getByRole('button', { name: '将标签页收入法宝袋' }));
+
+      await waitFor(() => {
+        expect((globalThis as any).chrome.runtime.sendMessage).toHaveBeenCalledWith({
+          type: 'collect-current-tab',
+        });
+      });
+    });
+
+    it('shows closing hint after successful collection', async () => {
+      render(<PopupPage />);
+
+      fireEvent.click(screen.getByRole('button', { name: '将标签页收入法宝袋' }));
+
+      await waitFor(() => {
+        expect(screen.getByText('已收入法宝袋，会关闭当前标签页')).toBeInTheDocument();
       });
     });
   });

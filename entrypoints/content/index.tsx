@@ -6,7 +6,8 @@ import { useState, useEffect, useCallback } from 'react';
 import BagIcon from './BagIcon';
 import { TabGrid } from './TabGrid';
 import { Toast } from './Toast';
-import { t } from '~/utils/i18n';
+import { setRuntimeLocalePreference, t } from '~/utils/i18n';
+import { localePreference } from '~/utils/storage';
 
 interface ToastState {
   visible: boolean;
@@ -18,6 +19,7 @@ interface ToastState {
 function MagicBagApp() {
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [toast, setToast] = useState<ToastState>({ visible: false, message: '', type: 'success' });
+  const [, setLocaleVersion] = useState(0);
 
   // Handle tab click - open URL in new tab (GRID-04)
   const handleTabClick = useCallback((url: string) => {
@@ -57,6 +59,20 @@ function MagicBagApp() {
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessage);
     };
+  }, []);
+
+  useEffect(() => {
+    localePreference.getValue().then((preference) => {
+      setRuntimeLocalePreference(preference);
+      setLocaleVersion((current) => current + 1);
+    });
+
+    const unwatch = localePreference.watch((preference) => {
+      setRuntimeLocalePreference(preference);
+      setLocaleVersion((current) => current + 1);
+    });
+
+    return () => unwatch();
   }, []);
 
   return (

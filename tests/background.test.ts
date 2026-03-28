@@ -69,7 +69,7 @@ describe('Background Script - Phase 2', () => {
         id: 'save-tab-to-bag',
         title: '将标签页收入法宝袋',
         contexts: ['page'],
-      });
+      }, expect.any(Function));
     });
 
     it('should have correct menu title "将标签页收入法宝袋"', async () => {

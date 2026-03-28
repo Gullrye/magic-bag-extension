@@ -7,6 +7,11 @@ vi.mock('~/utils/storage', () => ({
     getValue: vi.fn(),
   },
   addTab: vi.fn(),
+  localePreference: {
+    getValue: vi.fn(() => Promise.resolve('system')),
+    setValue: vi.fn(() => Promise.resolve()),
+    watch: vi.fn(() => vi.fn()),
+  },
 }));
 
 describe('PopupPage', () => {
@@ -45,6 +50,13 @@ describe('PopupPage', () => {
       expect(screen.getByText('Bag Console')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Show Panel' })).toBeInTheDocument();
       expect(screen.getByText('Export Tabs')).toBeInTheDocument();
+    });
+
+    it('renders locale switcher', () => {
+      render(<PopupPage />);
+      expect(screen.getByRole('button', { name: '跟随系统' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: '中文' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'EN' })).toBeInTheDocument();
     });
   });
 
@@ -97,6 +109,23 @@ describe('PopupPage', () => {
 
       await waitFor(() => {
         expect(screen.getByText('已收入法宝袋，会关闭当前标签页')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Locale Switching', () => {
+    it('persists locale preference from popup controls', async () => {
+      const { localePreference } = await import('~/utils/storage');
+      render(<PopupPage />);
+
+      fireEvent.click(screen.getByRole('button', { name: 'EN' }));
+
+      await waitFor(() => {
+        expect(localePreference.setValue).toHaveBeenCalledWith('en');
+        expect((globalThis as any).chrome.runtime.sendMessage).toHaveBeenCalledWith({
+          type: 'set-locale-preference',
+          preference: 'en',
+        });
       });
     });
   });

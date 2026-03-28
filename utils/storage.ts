@@ -1,5 +1,6 @@
 import { storage } from 'wxt/utils/storage';
 import type { IconPosition, SavedTab } from '~/entrypoints/content/types';
+import type { LocalePreference } from './i18n';
 
 export const iconPosition = storage.defineItem<IconPosition>('local:iconPosition', {
   fallback: { x: 20, y: 600, edge: 'bottom' },
@@ -8,6 +9,11 @@ export const iconPosition = storage.defineItem<IconPosition>('local:iconPosition
 
 export const savedTabs = storage.defineItem<SavedTab[]>('local:savedTabs', {
   fallback: [],
+  version: 1,
+});
+
+export const localePreference = storage.defineItem<LocalePreference>('local:localePreference', {
+  fallback: 'system',
   version: 1,
 });
 

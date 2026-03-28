@@ -8,6 +8,10 @@ const zhCN: MessageCatalog = {
   contextMenuSaveTab: '将标签页收入法宝袋',
   popupTitle: '藏阁整备',
   popupLead: '常用操作在此即开即用，当前页主面板也可以直接唤起。',
+  popupLanguageLabel: '语言',
+  popupLanguageAuto: '跟随系统',
+  popupLanguageZh: '中文',
+  popupLanguageEn: 'EN',
   popupCollectTab: '将标签页收入法宝袋',
   popupCloseCurrentTab: '关闭当前页',
   popupShowPanel: '展示面板',
@@ -60,6 +64,10 @@ const enUS: MessageCatalog = {
   contextMenuSaveTab: 'Save tab to Magic Bag',
   popupTitle: 'Bag Console',
   popupLead: 'Keep the core actions close. You can also open the in-page panel for the current tab.',
+  popupLanguageLabel: 'Language',
+  popupLanguageAuto: 'Auto',
+  popupLanguageZh: '中文',
+  popupLanguageEn: 'EN',
   popupCollectTab: 'Save This Tab to Magic Bag',
   popupCloseCurrentTab: 'Closes current tab',
   popupShowPanel: 'Show Panel',
@@ -121,8 +129,11 @@ const catalogs = {
 };
 
 export type SupportedLocale = keyof typeof catalogs;
+export type LocalePreference = SupportedLocale | 'system';
 
-export function getLocale(): SupportedLocale {
+let runtimeLocalePreference: LocalePreference = 'system';
+
+export function detectSystemLocale(): SupportedLocale {
   const uiLanguage = globalThis.chrome?.i18n?.getUILanguage?.()
     || globalThis.navigator?.language
     || 'zh-CN';
@@ -130,8 +141,20 @@ export function getLocale(): SupportedLocale {
   return uiLanguage.toLowerCase().startsWith('zh') ? 'zh' : 'en';
 }
 
+export function resolveLocale(preference: LocalePreference = runtimeLocalePreference): SupportedLocale {
+  return preference === 'system' ? detectSystemLocale() : preference;
+}
+
+export function setRuntimeLocalePreference(preference: LocalePreference) {
+  runtimeLocalePreference = preference;
+}
+
+export function getRuntimeLocalePreference() {
+  return runtimeLocalePreference;
+}
+
 export function t(key: keyof typeof zhCN, params?: Record<string, string | number>): string {
-  const locale = getLocale();
+  const locale = resolveLocale();
   const value = catalogs[locale][key] ?? zhCN[key];
 
   return typeof value === 'function' ? value(params) : value;

@@ -58,6 +58,9 @@ if (!HTMLElement.prototype.releasePointerCapture) {
     onInstalled: {
       addListener: vi.fn(),
     },
+    onStartup: {
+      addListener: vi.fn(),
+    },
     onMessage: {
       addListener: vi.fn(),
     },
@@ -80,6 +83,10 @@ if (!HTMLElement.prototype.releasePointerCapture) {
   },
   contextMenus: {
     create: vi.fn(),
+    removeAll: vi.fn((callback?: () => void) => {
+      callback?.();
+      return Promise.resolve();
+    }),
     onClicked: {
       addListener: vi.fn(),
     },

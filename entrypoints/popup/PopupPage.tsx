@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
-import { addTab, savedTabs } from '~/utils/storage';
+import { useEffect, useRef, useState } from 'react';
+import { addTab, localePreference, savedTabs } from '~/utils/storage';
 import type { SavedTab } from '~/entrypoints/content/types';
-import { t } from '~/utils/i18n';
+import { setRuntimeLocalePreference, t, type LocalePreference } from '~/utils/i18n';
 
 type ToastType = 'success' | 'warning';
 
@@ -13,7 +13,33 @@ interface ToastState {
 
 export function PopupPage() {
   const [toast, setToast] = useState<ToastState>({ visible: false, message: '', type: 'success' });
+  const [locale, setLocale] = useState<LocalePreference>('system');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    localePreference.getValue().then((preference) => {
+      setRuntimeLocalePreference(preference);
+      setLocale(preference);
+    });
+
+    const unwatch = localePreference.watch((preference) => {
+      setRuntimeLocalePreference(preference);
+      setLocale(preference);
+    });
+
+    return () => unwatch();
+  }, []);
+
+  const handleLocaleChange = async (preference: LocalePreference) => {
+    setRuntimeLocalePreference(preference);
+    setLocale(preference);
+    await localePreference.setValue(preference);
+    try {
+      await chrome.runtime.sendMessage({ type: 'set-locale-preference', preference });
+    } catch {
+      // ignore background refresh failures; popup/content still rerender from storage
+    }
+  };
 
   const handleCollectCurrentTab = async () => {
     try {
@@ -116,11 +142,43 @@ export function PopupPage() {
       <div className="popup-page__grain" aria-hidden="true" />
       <div className="popup-page__shell">
         <header className="popup-page__hero">
-          <p className="popup-page__eyebrow">{t('extName')}</p>
-          <h1 className="popup-page__title">{t('popupTitle')}</h1>
-          <p className="popup-page__lead">
-            {t('popupLead')}
-          </p>
+          <div className="popup-page__hero-top">
+            <div className="popup-page__hero-copy">
+              <p className="popup-page__eyebrow">{t('extName')}</p>
+              <h1 className="popup-page__title">{t('popupTitle')}</h1>
+              <p className="popup-page__lead">
+                {t('popupLead')}
+              </p>
+            </div>
+            <div className="popup-page__locale" aria-label={t('popupLanguageLabel')}>
+              <div className="popup-page__locale-switch">
+                <button
+                  type="button"
+                  className="popup-page__locale-button"
+                  data-active={locale === 'system'}
+                  onClick={() => handleLocaleChange('system')}
+                >
+                  {t('popupLanguageAuto')}
+                </button>
+                <button
+                  type="button"
+                  className="popup-page__locale-button"
+                  data-active={locale === 'zh'}
+                  onClick={() => handleLocaleChange('zh')}
+                >
+                  {t('popupLanguageZh')}
+                </button>
+                <button
+                  type="button"
+                  className="popup-page__locale-button"
+                  data-active={locale === 'en'}
+                  onClick={() => handleLocaleChange('en')}
+                >
+                  {t('popupLanguageEn')}
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="popup-page__hero-actions">
             <button type="button" onClick={handleCollectCurrentTab} className="popup-page__primary">
               <span className="popup-page__primary-label">{t('popupCollectTab')}</span>

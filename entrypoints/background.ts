@@ -1,16 +1,69 @@
 import { addTab } from '~/utils/storage';
 import type { SavedTab } from '~/entrypoints/content/types';
-import { t } from '~/utils/i18n';
+import { localePreference } from '~/utils/storage';
+import { setRuntimeLocalePreference, t, type LocalePreference } from '~/utils/i18n';
 
-export default defineBackground(() => {
-  // Register context menu on install (per RESEARCH.md Pattern 1)
-  chrome.runtime.onInstalled.addListener(() => {
+let contextMenuRefreshPromise: Promise<void> | null = null;
+
+function removeAllContextMenus(): Promise<void> {
+  return new Promise((resolve) => {
+    if (!chrome.contextMenus.removeAll) {
+      resolve();
+      return;
+    }
+
+    chrome.contextMenus.removeAll(() => {
+      resolve();
+    });
+  });
+}
+
+function createSaveTabMenu(): Promise<void> {
+  return new Promise((resolve) => {
     chrome.contextMenus.create({
       id: 'save-tab-to-bag',
       title: t('contextMenuSaveTab'),
       contexts: ['page'],
+    }, () => {
+      const error = chrome.runtime.lastError;
+      if (error && !error.message?.includes('duplicate id')) {
+        console.debug('Context menu create failed:', error.message);
+      }
+      resolve();
     });
   });
+}
+
+async function refreshContextMenu(preference?: LocalePreference) {
+  if (contextMenuRefreshPromise) {
+    await contextMenuRefreshPromise;
+  }
+
+  contextMenuRefreshPromise = (async () => {
+  const nextPreference = preference ?? await localePreference.getValue();
+  setRuntimeLocalePreference(nextPreference);
+    await removeAllContextMenus();
+    await createSaveTabMenu();
+  })();
+
+  try {
+    await contextMenuRefreshPromise;
+  } finally {
+    contextMenuRefreshPromise = null;
+  }
+}
+
+export default defineBackground(() => {
+  // Register context menu on install (per RESEARCH.md Pattern 1)
+  chrome.runtime.onInstalled.addListener(() => {
+    void refreshContextMenu();
+  });
+
+  chrome.runtime.onStartup?.addListener?.(() => {
+    void refreshContextMenu();
+  });
+
+  void refreshContextMenu();
 
   // Handle context menu clicks (per RESEARCH.md Pattern 1)
   chrome.contextMenus.onClicked.addListener(async (info, tab) => {
@@ -42,6 +95,13 @@ export default defineBackground(() => {
         sendResponse({ status: 'error' });
       });
 
+      return true;
+    }
+
+    if (message.type === 'set-locale-preference' && message.preference) {
+      void refreshContextMenu(message.preference as LocalePreference)
+        .then(() => sendResponse({ status: 'ok' }))
+        .catch(() => sendResponse({ status: 'error' }));
       return true;
     }
   });

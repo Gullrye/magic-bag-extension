@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '~/utils/i18n';
 import type { SavedTab } from './types';
 
 interface TabCardProps {
@@ -45,7 +46,7 @@ export function TabCard({ tab, onClick, onDelete }: TabCardProps) {
     >
       <button
         type="button"
-        aria-label="删除标签页"
+        aria-label={t('contentDeleteTab')}
         onMouseDown={handleMouseDown}
         onClick={handleDeleteClick}
         className="magic-bag-card__delete"
@@ -98,7 +99,7 @@ export function TabCard({ tab, onClick, onDelete }: TabCardProps) {
 
       <div className="magic-bag-card__title-wrap">
         <h3 className="magic-bag-card__title" title={tab.title}>
-          {tab.title || 'Untitled'}
+          {tab.title || t('contentUntitled')}
         </h3>
       </div>
 

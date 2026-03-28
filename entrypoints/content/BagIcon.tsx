@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Draggable from 'react-draggable';
 import { iconPosition } from '~/utils/storage';
 import { snapToEdge, clampToBounds, refitToViewport } from '~/utils/drag';
+import { t } from '~/utils/i18n';
 import type { IconPosition } from './types';
 
 interface BagIconProps {
@@ -124,10 +125,10 @@ export default function BagIcon({ onToggleGrid }: BagIconProps) {
         }}
         role="button"
         tabIndex={0}
-        aria-label="法宝袋 - 点击查看已收纳的标签页"
+        aria-label={t('contentBagAriaLabel')}
       >
         <div className="magic-bag-trigger__halo" aria-hidden="true" />
-        <div className="magic-bag-trigger__badge" aria-hidden="true">藏</div>
+        <div className="magic-bag-trigger__badge" aria-hidden="true">{t('contentBagBadge')}</div>
         {/* Chinese traditional pouch (法宝袋) SVG icon */}
         <svg
           viewBox="0 0 48 48"

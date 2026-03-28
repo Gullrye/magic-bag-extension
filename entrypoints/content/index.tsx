@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 import BagIcon from './BagIcon';
 import { TabGrid } from './TabGrid';
 import { Toast } from './Toast';
+import { t } from '~/utils/i18n';
 
 interface ToastState {
   visible: boolean;
@@ -43,9 +44,9 @@ function MagicBagApp() {
   useEffect(() => {
     const handleMessage = (message: any) => {
       if (message.type === 'success-toast') {
-        setToast({ visible: true, message: '已收入法宝袋', type: 'success' });
+        setToast({ visible: true, message: t('contentToastSaved'), type: 'success' });
       } else if (message.type === 'duplicate-warning') {
-        setToast({ visible: true, message: '该标签页已在法宝袋中', type: 'warning' });
+        setToast({ visible: true, message: t('contentToastDuplicate'), type: 'warning' });
       } else if (message.type === 'open-grid') {
         setIsGridOpen(true);
       }

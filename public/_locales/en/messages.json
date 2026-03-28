@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "Magic Bag"
+  },
+  "extDescription": {
+    "message": "Save tabs in one click and keep your browser tidy"
+  },
+  "contextMenuSaveTab": {
+    "message": "Save tab to Magic Bag"
+  }
+}

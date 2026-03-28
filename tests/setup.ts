@@ -12,11 +12,24 @@ afterEach(() => {
 
 // Chrome storage mock with in-memory Map for testing
 const mockStorage = new Map<string, any>();
+const testMessages = {
+  zh_CN: {
+    extName: '法宝袋',
+    extDescription: '一键收纳标签页，让浏览器保持清爽',
+    contextMenuSaveTab: '将标签页收入法宝袋',
+  },
+  en: {
+    extName: 'Magic Bag',
+    extDescription: 'Save tabs in one click and keep your browser tidy',
+    contextMenuSaveTab: 'Save tab to Magic Bag',
+  },
+};
 
 // Reset all mocks before each test
 beforeEach(() => {
   vi.clearAllMocks();
   mockStorage.clear(); // Clear storage Map between tests
+  (globalThis as any).__TEST_UI_LANG = 'zh-CN';
 });
 
 // Minimal pointer-event support for future @dnd-kit interaction tests.
@@ -55,6 +68,15 @@ if (!HTMLElement.prototype.releasePointerCapture) {
       version: '1.0.0',
       permissions: ['storage', 'activeTab', 'contextMenus', 'tabs', 'unlimitedStorage'],
     })),
+  },
+  i18n: {
+    getUILanguage: vi.fn(() => (globalThis as any).__TEST_UI_LANG || 'zh-CN'),
+    getMessage: vi.fn((key: 'extName' | 'extDescription' | 'contextMenuSaveTab') => {
+      const locale = String((globalThis as any).__TEST_UI_LANG || 'zh-CN').toLowerCase().startsWith('zh')
+        ? 'zh_CN'
+        : 'en';
+      return testMessages[locale][key] || '';
+    }),
   },
   contextMenus: {
     create: vi.fn(),

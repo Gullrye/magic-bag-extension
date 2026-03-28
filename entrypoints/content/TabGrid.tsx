@@ -20,6 +20,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import { EmptyState } from './EmptyState';
 import { TabCard } from './TabCard';
 import type { SavedTab } from './types';
+import { t } from '~/utils/i18n';
 
 interface TabGridProps {
   isOpen: boolean;
@@ -165,8 +166,8 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   }
 
   const resultCountLabel = query.trim()
-    ? `检得 ${filteredTabs.length} 项`
-    : `共藏 ${tabs.length} 项`;
+    ? t('contentResultCount', { count: filteredTabs.length })
+    : t('contentStoredCount', { count: tabs.length });
 
   return (
     <div
@@ -177,17 +178,17 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
         animation: 'gridOpen 300ms cubic-bezier(0.4, 0, 0.2, 1)',
       }}
       role="dialog"
-      aria-label="法宝袋"
+      aria-label={t('contentPanelAriaLabel')}
     >
       <div className="magic-bag-panel__surface">
         <div className="magic-bag-panel__ornament" aria-hidden="true" />
 
         <header className="magic-bag-panel__header">
           <div className="magic-bag-panel__title-group">
-            <p className="magic-bag-panel__eyebrow">法宝袋</p>
-            <h2 className="magic-bag-panel__title">藏页匣</h2>
+            <p className="magic-bag-panel__eyebrow">{t('contentPanelEyebrow')}</p>
+            <h2 className="magic-bag-panel__title">{t('contentPanelTitle')}</h2>
             <p className="magic-bag-panel__description">
-              收拢当下分心的页面，像题签一样安稳归档。
+              {t('contentPanelDescription')}
             </p>
           </div>
 
@@ -204,7 +205,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
                 type="text"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="检索标题或网址"
+                placeholder={t('contentSearchPlaceholder')}
                 className="magic-bag-search__input"
               />
             </label>
@@ -217,7 +218,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
                   onClick={() => setIsConfirmOpen(true)}
                   className="magic-bag-panel__clear"
                 >
-                  清匣
+                  {t('contentClearBag')}
                 </button>
               ) : null}
             </div>
@@ -229,9 +230,9 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
             <EmptyState />
           ) : filteredTabs.length === 0 ? (
             <div className="magic-bag-empty">
-              <p className="magic-bag-empty__title">未检得相符藏页</p>
+              <p className="magic-bag-empty__title">{t('contentNoMatchTitle')}</p>
               <p className="magic-bag-empty__body">
-                换一个关键词试试，或清空检索后查看全部收纳。
+                {t('contentNoMatchBody')}
               </p>
             </div>
           ) : isReorderEnabled ? (
@@ -283,10 +284,10 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
 
       <ConfirmDialog
         isOpen={isConfirmOpen}
-        title="清空法宝袋？"
-        message="这会移除所有已收纳标签页，且无法撤销。"
-        confirmText="确认清匣"
-        cancelText="取消"
+        title={t('contentConfirmTitle')}
+        message={t('contentConfirmMessage')}
+        confirmText={t('contentConfirmAction')}
+        cancelText={t('contentCancel')}
         onConfirm={handleConfirmClear}
         onCancel={() => setIsConfirmOpen(false)}
       />

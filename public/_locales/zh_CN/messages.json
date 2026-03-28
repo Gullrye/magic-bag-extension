@@ -1,0 +1,11 @@
+{
+  "extName": {
+    "message": "法宝袋"
+  },
+  "extDescription": {
+    "message": "一键收纳标签页，让浏览器保持清爽"
+  },
+  "contextMenuSaveTab": {
+    "message": "将标签页收入法宝袋"
+  }
+}

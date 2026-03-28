@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { addTab, savedTabs } from '~/utils/storage';
 import type { SavedTab } from '~/entrypoints/content/types';
+import { t } from '~/utils/i18n';
 
 type ToastType = 'success' | 'warning';
 
@@ -19,18 +20,18 @@ export function PopupPage() {
       const response = await chrome.runtime.sendMessage({ type: 'collect-current-tab' });
 
       if (response?.status === 'success') {
-        showToast('已收入法宝袋，会关闭当前标签页', 'success');
+        showToast(t('popupCollectSuccess'), 'success');
         return;
       }
 
       if (response?.status === 'duplicate') {
-        showToast('当前标签页已在法宝袋中', 'warning');
+        showToast(t('popupCollectDuplicate'), 'warning');
         return;
       }
 
-      showToast('当前页面暂时无法收入法宝袋', 'warning');
+      showToast(t('popupCollectError'), 'warning');
     } catch (error) {
-      showToast('当前页面暂时无法收入法宝袋', 'warning');
+      showToast(t('popupCollectError'), 'warning');
     }
   };
 
@@ -46,14 +47,14 @@ export function PopupPage() {
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
       if (!activeTab?.id) {
-        showToast('未找到当前标签页', 'warning');
+        showToast(t('popupMissingCurrentTab'), 'warning');
         return;
       }
 
       await chrome.tabs.sendMessage(activeTab.id, { type: 'open-grid' });
-      showToast('已在当前标签页展示面板', 'success');
+      showToast(t('popupShowPanelSuccess'), 'success');
     } catch (error) {
-      showToast('当前页面暂时无法展示面板', 'warning');
+      showToast(t('popupShowPanelError'), 'warning');
     }
   };
 
@@ -70,9 +71,9 @@ export function PopupPage() {
         saveAs: true,
       });
 
-      showToast(`已导出 ${tabs.length} 个标签页`, 'success');
+      showToast(t('popupExportSuccess', { count: tabs.length }), 'success');
     } catch (error) {
-      showToast(`导出失败：${error}`, 'warning');
+      showToast(t('popupExportError', { error: String(error) }), 'warning');
     }
   };
 
@@ -96,9 +97,9 @@ export function PopupPage() {
         if (added) importedCount++;
       }
 
-      showToast(`已导入 ${importedCount} 个标签页`, 'success');
+      showToast(t('popupImportSuccess', { count: importedCount }), 'success');
     } catch (error) {
-      showToast(`导入失败：${error}`, 'warning');
+      showToast(t('popupImportError', { error: String(error) }), 'warning');
     }
 
     if (event.target) {
@@ -115,39 +116,39 @@ export function PopupPage() {
       <div className="popup-page__grain" aria-hidden="true" />
       <div className="popup-page__shell">
         <header className="popup-page__hero">
-          <p className="popup-page__eyebrow">法宝袋</p>
-          <h1 className="popup-page__title">藏阁整备</h1>
+          <p className="popup-page__eyebrow">{t('extName')}</p>
+          <h1 className="popup-page__title">{t('popupTitle')}</h1>
           <p className="popup-page__lead">
-            常用操作在此即开即用，当前页主面板也可以直接唤起。
+            {t('popupLead')}
           </p>
           <div className="popup-page__hero-actions">
             <button type="button" onClick={handleCollectCurrentTab} className="popup-page__primary">
-              <span className="popup-page__primary-label">将标签页收入法宝袋</span>
-              <span className="popup-page__primary-badge">关闭当前页</span>
+              <span className="popup-page__primary-label">{t('popupCollectTab')}</span>
+              <span className="popup-page__primary-badge">{t('popupCloseCurrentTab')}</span>
             </button>
             <button type="button" onClick={handleShowPanel} className="popup-page__secondary">
-              展示面板
+              {t('popupShowPanel')}
             </button>
           </div>
         </header>
 
         <section className="popup-page__grid">
           <article className="popup-card">
-            <p className="popup-card__eyebrow">备份</p>
-            <h2 className="popup-card__title">导出标签页</h2>
+            <p className="popup-card__eyebrow">{t('popupExportEyebrow')}</p>
+            <h2 className="popup-card__title">{t('popupExportTitle')}</h2>
             <p className="popup-card__body">
-              将所有已收纳的标签页导出为 JSON 文件，可用于备份或迁移。
+              {t('popupExportBody')}
             </p>
             <button type="button" onClick={handleExport} className="popup-card__button">
-              导出 JSON
+              {t('popupExportButton')}
             </button>
           </article>
 
           <article className="popup-card">
-            <p className="popup-card__eyebrow">归档</p>
-            <h2 className="popup-card__title">导入标签页</h2>
+            <p className="popup-card__eyebrow">{t('popupImportEyebrow')}</p>
+            <h2 className="popup-card__title">{t('popupImportTitle')}</h2>
             <p className="popup-card__body">
-              从 JSON 文件导入标签页。导入的标签会添加到现有标签中，重复的网址会被跳过。
+              {t('popupImportBody')}
             </p>
             <input
               ref={fileInputRef}
@@ -161,7 +162,7 @@ export function PopupPage() {
               onClick={handleSelectFile}
               className="popup-card__button popup-card__button--secondary"
             >
-              选择文件
+              {t('popupImportButton')}
             </button>
           </article>
         </section>

@@ -1,89 +1,148 @@
-# 法宝袋 (Magic Bag)
+# 法宝袋 / Magic Bag
 
-一款 Edge 浏览器扩展，提供一个可拖拽的悬浮图标"法宝袋"。用户可以将浏览器标签页"收入"袋中，标签像棋子一样在棋盘上铺开展示。
+## 中文
 
-**Core Value:** 一键收纳标签页，让浏览器保持清爽。
+法宝袋是一款 Edge / Chromium 浏览器扩展，提供一个可拖拽的悬浮入口。你可以把当前标签页收入法宝袋，在页面内用面板集中查看、搜索、重排和重新打开已保存的标签页。
 
-### Setup
+**核心价值：** 一键收纳标签页，让浏览器保持清爽。
 
-1. **Install dependencies:**
+### 当前能力
+
+- 悬浮法宝袋入口，支持拖拽和吸边
+- 将当前标签页收入法宝袋
+- 面板内查看、搜索、删除、清空、拖拽排序
+- popup 内展示面板、导入、导出
+- 中文 / English 双语界面
+
+### 安装与运行
+
+1. 安装依赖
+
 ```bash
 pnpm install
 ```
 
-2. **Build the extension:**
+2. 构建扩展
+
 ```bash
 pnpm build
 ```
 
-3. **Load in Edge:**
-   - Open Edge and navigate to `edge://extensions`
-   - Enable "Developer mode" (toggle in top-right)
-   - Click "Load unpacked"
-   - Select the `magic-bag/.output/chrome-mv3` directory
+3. 在 Edge 中加载
+
+- 打开 `edge://extensions`
+- 开启右上角 `Developer mode`
+- 点击 `Load unpacked`
+- 选择 `.output/chrome-mv3` 目录
+
+### 技术栈
+
+- `WXT 0.20.20`
+- `React 18.3.1`
+- `TypeScript 5.x`
+- `Tailwind CSS`
+- `react-draggable`
+- `@dnd-kit`
+- `Manifest V3`
+
+### 代码结构
+
+- `entrypoints/background.ts`：后台脚本，处理上下文菜单与标签页收纳
+- `entrypoints/content/index.tsx`：内容脚本入口，挂载页面内 UI
+- `entrypoints/content/TabGrid.tsx`：主面板
+- `entrypoints/popup/PopupPage.tsx`：浏览器工具栏 popup
+- `utils/storage.ts`：标签页与图标位置存储
+- `utils/i18n.ts`：运行时双语文案
+- `_locales/`：扩展名、描述等浏览器层本地化资源
+
+### 手动验证
+
+1. 重新加载扩展
+2. 点击工具栏图标，确认 popup 正常显示
+3. 在中文和英文浏览器 UI 下分别检查 popup 和页面内面板文案
+4. 点击 `将标签页收入法宝袋`，确认当前页被收纳并关闭
+5. 点击 `展示面板`，确认当前标签页显示法宝袋面板
+6. 验证导入、导出、搜索、删除和拖拽排序
+
+### 开发命令
+
+```bash
+pnpm dev
+pnpm test:run
+pnpm compile
+pnpm build
+```
+
+## English
+
+Magic Bag is an Edge / Chromium extension with a draggable floating entry point. It lets you save the current tab into a bag, then manage saved tabs in an in-page panel with search, reorder, reopen, import, and export support.
+
+**Core value:** save tabs in one click and keep your browser tidy.
+
+### Current Features
+
+- Draggable floating Magic Bag entry point with edge snapping
+- Save the current tab into Magic Bag
+- In-page panel for viewing, searching, deleting, clearing, and reordering saved tabs
+- Toolbar popup for showing the panel, importing, and exporting
+- Bilingual UI support in Chinese and English
+
+### Setup
+
+1. Install dependencies
+
+```bash
+pnpm install
+```
+
+2. Build the extension
+
+```bash
+pnpm build
+```
+
+3. Load it in Edge
+
+- Open `edge://extensions`
+- Enable `Developer mode`
+- Click `Load unpacked`
+- Select the `.output/chrome-mv3` directory
 
 ### Tech Stack
 
-- **WXT 0.20.20** - Extension build framework
-- **React 18.3.1** - UI framework
-- **TypeScript 5.x** - Type safety
-- **Tailwind CSS** - Styling (inside Shadow DOM)
-- **react-draggable 4.5.0** - Drag behavior
-- **@dnd-kit** - Drag-to-reorder for saved tabs
-- **Manifest V3** - Chrome extension standard
+- `WXT 0.20.20`
+- `React 18.3.1`
+- `TypeScript 5.x`
+- `Tailwind CSS`
+- `react-draggable`
+- `@dnd-kit`
+- `Manifest V3`
 
 ### Architecture
 
-- `entrypoints/background.ts` - Service worker for privileged APIs
-- `entrypoints/content/index.tsx` - Content script with Shadow DOM UI
-- `entrypoints/content/BagIcon.tsx` - Floating draggable icon component
-- `entrypoints/content/TabGrid.tsx` - Saved tab panel with search, clear-all, and reorder
-- `entrypoints/content/ConfirmDialog.tsx` - Bulk clear confirmation dialog
-- `utils/storage.ts` - WXT storage module for icon position and saved tabs
-- `utils/drag.ts` - Edge-snapping drag utilities
-
-### Current Status
-
-**Phase 1 (Infrastructure & Floating Icon):** ✅ Complete
-- [x] WXT + React + TypeScript setup
-- [x] Shadow DOM style isolation
-- [x] Draggable floating icon
-- [x] Edge snapping behavior
-- [x] Position persistence
-
-**Phase 2 (Tab Collection & Display):** ✅ Complete
-- [x] Context menu tab collection
-- [x] Chessboard-style tab panel
-- [x] Tab reopen flow
-- [x] Toast feedback and duplicate handling
-
-**Phase 3 (Tab Management):** ✅ Complete
-- [x] Search by title or URL
-- [x] Delete individual saved tabs
-- [x] Clear all with confirmation
-- [x] Drag to reorder saved tabs
-
-**Next Phase:** Polish & Portability (Phase 4)
+- `entrypoints/background.ts`: background script for context menu and tab collection
+- `entrypoints/content/index.tsx`: content script entry that mounts in-page UI
+- `entrypoints/content/TabGrid.tsx`: main saved-tabs panel
+- `entrypoints/popup/PopupPage.tsx`: browser toolbar popup
+- `utils/storage.ts`: storage for saved tabs and icon position
+- `utils/i18n.ts`: runtime bilingual copy
+- `_locales/`: browser-level localization assets for extension metadata
 
 ### Manual Verification
 
-1. Load the extension in Edge from `.output/chrome-mv3`
-2. Open the bag and confirm search input focus no longer closes the panel
-3. Search by title or URL and verify filtering updates in place
-4. Delete a tab and verify it disappears without opening
-5. Click `清空`, cancel once, confirm once
-6. Drag to reorder tabs and verify order persists after reopening the panel
+1. Reload the extension
+2. Click the toolbar icon and confirm the popup renders correctly
+3. Check popup and in-page copy in both Chinese and English browser UI
+4. Click `Save This Tab to Magic Bag` and confirm the current tab is saved and closed
+5. Click `Show Panel` and confirm the panel opens on the current tab
+6. Verify import, export, search, delete, and reorder flows
 
-## Development
+### Development Commands
 
 ```bash
-# Development mode with HMR
 pnpm dev
-
-# Test suite
-pnpm test --run
-
-# Build for production
+pnpm test:run
+pnpm compile
 pnpm build
 ```
 

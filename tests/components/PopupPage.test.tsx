@@ -22,7 +22,7 @@ describe('PopupPage', () => {
     it('renders popup title and primary action', () => {
       render(<PopupPage />);
       expect(screen.getByText('藏阁整备')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: '将标签页收入法宝袋' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /将标签页收入法宝袋/ })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: '展示面板' })).toBeInTheDocument();
     });
 
@@ -37,6 +37,14 @@ describe('PopupPage', () => {
       const fileInput = document.querySelector('input[type="file"]');
       expect(fileInput).toBeInTheDocument();
       expect(fileInput).toHaveAttribute('accept', '.json');
+    });
+
+    it('renders English copy when browser language is English', () => {
+      (globalThis as any).__TEST_UI_LANG = 'en-US';
+      render(<PopupPage />);
+      expect(screen.getByText('Bag Console')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Show Panel' })).toBeInTheDocument();
+      expect(screen.getByText('Export Tabs')).toBeInTheDocument();
     });
   });
 
@@ -73,7 +81,7 @@ describe('PopupPage', () => {
     it('requests background to collect the current tab', async () => {
       render(<PopupPage />);
 
-      fireEvent.click(screen.getByRole('button', { name: '将标签页收入法宝袋' }));
+      fireEvent.click(screen.getByRole('button', { name: /将标签页收入法宝袋/ }));
 
       await waitFor(() => {
         expect((globalThis as any).chrome.runtime.sendMessage).toHaveBeenCalledWith({
@@ -85,7 +93,7 @@ describe('PopupPage', () => {
     it('shows closing hint after successful collection', async () => {
       render(<PopupPage />);
 
-      fireEvent.click(screen.getByRole('button', { name: '将标签页收入法宝袋' }));
+      fireEvent.click(screen.getByRole('button', { name: /将标签页收入法宝袋/ }));
 
       await waitFor(() => {
         expect(screen.getByText('已收入法宝袋，会关闭当前标签页')).toBeInTheDocument();

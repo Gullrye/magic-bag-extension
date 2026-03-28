@@ -1,12 +1,13 @@
 import { addTab } from '~/utils/storage';
 import type { SavedTab } from '~/entrypoints/content/types';
+import { t } from '~/utils/i18n';
 
 export default defineBackground(() => {
   // Register context menu on install (per RESEARCH.md Pattern 1)
   chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
       id: 'save-tab-to-bag',
-      title: '将标签页收入法宝袋', // CONTEXT.md D-01
+      title: t('contextMenuSaveTab'),
       contexts: ['page'],
     });
   });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '~/utils/i18n';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export function ConfirmDialog({
         aria-labelledby="magic-bag-confirm-title"
         className="magic-bag-dialog"
       >
-        <p className="magic-bag-dialog__eyebrow">谨慎操作</p>
+        <p className="magic-bag-dialog__eyebrow">{t('contentDialogEyebrow')}</p>
         <h2 id="magic-bag-confirm-title" className="magic-bag-dialog__title">
           {title}
         </h2>

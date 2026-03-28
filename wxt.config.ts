@@ -4,8 +4,9 @@ import { defineConfig } from 'wxt';
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   manifest: {
-    name: '法宝袋',
-    description: '一键收纳标签页，让浏览器保持清爽',
+    default_locale: 'zh_CN',
+    name: '__MSG_extName__',
+    description: '__MSG_extDescription__',
     icons: {
       16: 'icons/icon16.png',
       32: 'icons/icon32.png',
@@ -13,6 +14,7 @@ export default defineConfig({
       128: 'icons/icon128.png',
     },
     action: {
+      default_title: '__MSG_extName__',
       default_icon: {
         16: 'icons/icon16.png',
         32: 'icons/icon32.png',

@@ -232,13 +232,17 @@ export function PopupPage() {
       <div className="popup-page__shell">
         <header className="popup-page__hero">
           <div className="popup-page__hero-top">
-            <div className="popup-page__hero-copy">
-              <p className="popup-page__eyebrow">{t('extName')}</p>
-              <h1 className="popup-page__title">{t('popupTitle')}</h1>
-              <p className="popup-page__lead">
-                {t('popupLead')}
-              </p>
-            </div>
+            <h1 className="popup-page__title">
+              {t('popupTitle')}
+              <span className="popup-tooltip" tabIndex={0} role="button" aria-label={t('popupTooltipHint')}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                  <path d="M12 16V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="8" r="1" fill="currentColor" />
+                </svg>
+                <span className="popup-tooltip__content">{t('popupLead')}</span>
+              </span>
+            </h1>
             <div className="popup-page__locale" aria-label={t('popupLanguageLabel')}>
               <div className="popup-page__locale-switch">
                 <button
@@ -281,15 +285,21 @@ export function PopupPage() {
 
         <section className="popup-page__grid">
           <article className="popup-card">
-            <p className="popup-card__eyebrow">{t('popupSyncEyebrow')}</p>
-            <h2 className="popup-card__title">{t('popupSyncTitle')}</h2>
+            <h2 className="popup-card__title">
+              {t('popupSyncTitle')}
+              <span className="popup-tooltip" tabIndex={0} role="button" aria-label={t('popupTooltipHint')}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                  <path d="M12 16V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="8" r="1" fill="currentColor" />
+                </svg>
+                <span className="popup-tooltip__content">{t('popupSyncHint')}</span>
+              </span>
+            </h2>
             <p className="popup-card__body">
               {syncFileName
                 ? t('popupSyncBound', { fileName: syncFileName })
                 : t('popupSyncUnbound')}
-            </p>
-            <p className="popup-card__body popup-card__body--muted">
-              {t('popupSyncHint')}
             </p>
             <div className="popup-card__actions">
               <button type="button" onClick={handleExportToSyncFile} className="popup-card__button">
@@ -305,36 +315,36 @@ export function PopupPage() {
           </article>
 
           <article className="popup-card">
-            <p className="popup-card__eyebrow">{t('popupExportEyebrow')}</p>
-            <h2 className="popup-card__title">{t('popupExportTitle')}</h2>
-            <p className="popup-card__body">
-              {t('popupExportBody')}
-            </p>
-            <button type="button" onClick={handleExport} className="popup-card__button">
-              {t('popupExportButton')}
-            </button>
-          </article>
-
-          <article className="popup-card">
-            <p className="popup-card__eyebrow">{t('popupImportEyebrow')}</p>
-            <h2 className="popup-card__title">{t('popupImportTitle')}</h2>
-            <p className="popup-card__body">
-              {t('popupImportBody')}
-            </p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={handleSelectFile}
-              className="popup-card__button popup-card__button--secondary"
-            >
-              {t('popupImportButton')}
-            </button>
+            <h2 className="popup-card__title">
+              {t('popupIoTitle')}
+              <span className="popup-tooltip" tabIndex={0} role="button" aria-label={t('popupTooltipHint')}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                  <path d="M12 16V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="8" r="1" fill="currentColor" />
+                </svg>
+                <span className="popup-tooltip__content">{t('popupIoHint')}</span>
+              </span>
+            </h2>
+            <div className="popup-card__actions">
+              <button type="button" onClick={handleExport} className="popup-card__button">
+                {t('popupExportButton')}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={handleSelectFile}
+                className="popup-card__button popup-card__button--secondary"
+              >
+                {t('popupImportButton')}
+              </button>
+            </div>
           </article>
         </section>
       </div>

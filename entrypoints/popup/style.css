@@ -42,7 +42,7 @@ body {
 }
 
 .popup-page__hero {
-  padding: 14px;
+  padding: 12px;
   border: 1px solid rgba(121, 72, 49, 0.28);
   border-radius: 22px;
   background:
@@ -53,17 +53,11 @@ body {
 
 .popup-page__hero-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-.popup-page__hero-copy {
-  min-width: 0;
-  flex: 1;
-}
-
-.popup-page__eyebrow,
 .popup-card__eyebrow {
   margin: 0;
   color: rgba(247, 226, 189, 0.86);
@@ -74,18 +68,11 @@ body {
 }
 
 .popup-page__title {
-  margin: 6px 0 4px;
+  margin: 4px 0 0;
   color: #fbf3e4;
   font-size: 22px;
   line-height: 1;
   letter-spacing: 0.08em;
-}
-
-.popup-page__lead {
-  margin: 0;
-  color: rgba(248, 235, 211, 0.82);
-  font-size: 10px;
-  line-height: 1.45;
 }
 
 .popup-page__locale {
@@ -122,7 +109,7 @@ body {
 }
 
 .popup-page__hero-actions {
-  margin-top: 10px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -241,11 +228,6 @@ body {
   line-height: 1.45;
 }
 
-.popup-card__body--muted {
-  margin-top: 4px;
-  color: rgba(110, 91, 73, 0.82);
-}
-
 .popup-card__actions {
   display: grid;
   grid-template-columns: 1fr;
@@ -307,4 +289,68 @@ body {
 .popup-toast[data-type='warning'] .popup-toast__dot {
   background: #9a4f31;
   box-shadow: 0 0 0 6px rgba(154, 79, 49, 0.12);
+}
+
+.popup-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  vertical-align: middle;
+  cursor: help;
+}
+
+.popup-tooltip svg {
+  width: 100%;
+  height: 100%;
+  color: var(--popup-muted);
+  opacity: 0.6;
+  transition: opacity 160ms ease;
+}
+
+.popup-tooltip:hover svg,
+.popup-tooltip:focus-within svg {
+  opacity: 1;
+}
+
+.popup-tooltip__content {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 160px;
+  max-width: 200px;
+  padding: 8px 10px;
+  border: 1px solid rgba(123, 79, 52, 0.2);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 250, 241, 0.98), rgba(243, 231, 208, 0.98));
+  box-shadow: 0 8px 16px rgba(84, 48, 29, 0.16);
+  color: var(--popup-ink);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 160ms ease, visibility 160ms ease;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.popup-tooltip__content::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(243, 231, 208, 0.98);
+}
+
+.popup-tooltip:hover .popup-tooltip__content,
+.popup-tooltip:focus-within .popup-tooltip__content {
+  opacity: 1;
+  visibility: visible;
 }

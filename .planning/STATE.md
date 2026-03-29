@@ -93,10 +93,9 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260328-nzx | 当前浏览器插件的展示支持中文和英文两种，然后README.md支持中英文 | 2026-03-28 | 374e1b8 | [260328-nzx-readme-md](./quick/260328-nzx-readme-md/) |
 | 260328-pa0 | 为标签管理新增同步文件能力：保留现有导入导出，新增绑定JSON文件、从文件导入、导出到文件 | 2026-03-28 | af5e046 | [260328-pa0-json](./quick/260328-pa0-json/) |
-| 260329-ngz | 优化popup面板说明文字为tooltip图标 | 2026-03-29 | 44e2006 | [260329-ngz-popup-tooltip](./quick/260329-ngz-popup-tooltip/) |
-| 260329-o7c | 精简popup布局删除冗余文字 | 2026-03-29 | bb6dd10 | [260329-o7c-popup](./quick/260329-o7c-popup/) |
+| 260329-popup | 精简popup布局：tooltip图标+合并导入导出card+分离卡片 | 2026-03-29 | 9aaaaab | [260329-ngz-popup-tooltip](./quick/260329-ngz-popup-tooltip/) |
 
-Last activity: 2026-03-29 - Completed quick task 260329-o7c: 精简popup布局删除冗余文字
+Last activity: 2026-03-29 - Completed quick task 260329-popup: 精简popup布局
 
 ### Roadmap Evolution
 

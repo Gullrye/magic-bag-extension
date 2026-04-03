@@ -29,8 +29,6 @@ interface TabGridProps {
 }
 
 interface SortableTabCardProps {
-  offsetX: number;
-  offsetY: number;
   onDelete: (url: string) => void;
   onTabClick: (url: string) => void;
   rotate: number;
@@ -38,8 +36,6 @@ interface SortableTabCardProps {
 }
 
 function SortableTabCard({
-  offsetX,
-  offsetY,
   onDelete,
   onTabClick,
   rotate,
@@ -49,7 +45,7 @@ function SortableTabCard({
     id: tab.url,
   });
   const dragTransform = transform ? CSS.Transform.toString(transform) : '';
-  const baseTransform = `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`;
+  const baseTransform = `rotate(${rotate}deg)`;
 
   return (
     <div
@@ -240,15 +236,11 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
               <SortableContext items={tabs.map((tab) => tab.url)} strategy={rectSortingStrategy}>
                 <div className="magic-bag-grid">
                   {tabs.map((tab, index) => {
-                    const offsetX = (index % 4) * 6;
-                    const offsetY = Math.floor(index / 4) * 4;
                     const rotate = ((index % 5) - 2) * 0.8;
 
                     return (
                       <SortableTabCard
                         key={tab.url}
-                        offsetX={offsetX}
-                        offsetY={offsetY}
                         onDelete={handleDelete}
                         onTabClick={onTabClick}
                         rotate={rotate}
@@ -262,15 +254,13 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
           ) : (
             <div className="magic-bag-grid">
               {filteredTabs.map((tab, index) => {
-                const offsetX = (index % 4) * 6;
-                const offsetY = Math.floor(index / 4) * 4;
                 const rotate = ((index % 5) - 2) * 0.8;
 
                 return (
                   <div
                     key={tab.url}
                     style={{
-                      transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotate}deg)`,
+                      transform: `rotate(${rotate}deg)`,
                     }}
                   >
                     <TabCard tab={tab} onClick={onTabClick} onDelete={handleDelete} />

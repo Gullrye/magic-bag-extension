@@ -51,7 +51,7 @@ export function TabCard({ tab, onClick, onDelete }: TabCardProps) {
         onClick={handleDeleteClick}
         className="magic-bag-card__delete"
       >
-        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 16 16" fill="none">
           <path d="M5 5L11 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           <path d="M11 5L5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
@@ -73,7 +73,7 @@ export function TabCard({ tab, onClick, onDelete }: TabCardProps) {
                 const fallback = document.createElement('div');
                 fallback.className = 'fallback-icon magic-bag-card__favicon';
                 fallback.innerHTML = `
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                     <circle cx="8" cy="8" r="7" stroke="#9CA3AF" stroke-width="1.5"/>
                     <path d="M8 4v4M8 10v2M12 8h-4M4 8h4" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/>
                   </svg>
@@ -84,7 +84,7 @@ export function TabCard({ tab, onClick, onDelete }: TabCardProps) {
           />
         ) : (
           <div className="magic-bag-card__favicon">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <circle cx="8" cy="8" r="7" stroke="#9CA3AF" strokeWidth="1.5" />
               <path d="M8 4v4M8 10v2M12 8h-4M4 8h4" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
@@ -103,7 +103,6 @@ export function TabCard({ tab, onClick, onDelete }: TabCardProps) {
         </h3>
       </div>
 
-      <p className="magic-bag-card__url" title={tab.url}>{tab.url}</p>
     </article>
   );
 }

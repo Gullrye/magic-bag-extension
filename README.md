@@ -2,17 +2,16 @@
 
 ## 中文
 
-法宝袋是一款 Edge / Chromium 浏览器扩展，提供一个可拖拽的悬浮入口。你可以把当前标签页收入法宝袋，在页面内用面板集中查看、搜索、重排和重新打开已保存的标签页。
+法宝袋是一款 Edge / Chromium 浏览器扩展，通过工具栏 popup 和右键菜单收纳标签页。点击 popup 中的"展示面板"可在页面内集中查看、搜索、重排和重新打开已保存的标签页。
 
 **核心价值：** 一键收纳标签页，让浏览器保持清爽。
 
 ### 当前能力
 
-- 悬浮法宝袋入口，支持拖拽和吸边
-- 将当前标签页收入法宝袋
+- 右键菜单将当前标签页收入法宝袋
+- popup 展示面板、导入、导出
 - 面板内查看、搜索、删除、清空、拖拽排序
-- popup 内展示面板、导入、导出
-- 中文 / English 双语界面
+- 面板内查看、搜索、删除、清空、拖拽排序
 
 ### 安装与运行
 
@@ -41,11 +40,7 @@ pnpm build
 - `React 18.3.1`
 - `TypeScript 5.x`
 - `Tailwind CSS`
-- `react-draggable`
 - `@dnd-kit`
-- `Manifest V3`
-
-### 代码结构
 
 - `entrypoints/background.ts`：后台脚本，处理上下文菜单与标签页收纳
 - `entrypoints/content/index.tsx`：内容脚本入口，挂载页面内 UI
@@ -75,15 +70,13 @@ pnpm build
 
 ## English
 
-Magic Bag is an Edge / Chromium extension with a draggable floating entry point. It lets you save the current tab into a bag, then manage saved tabs in an in-page panel with search, reorder, reopen, import, and export support.
+Magic Bag is an Edge / Chromium extension that saves tabs via toolbar popup and context menu. Click "Show Panel" in the popup to manage saved tabs in-page with search, reorder, reopen, import, and export support.
 
 **Core value:** save tabs in one click and keep your browser tidy.
 
 ### Current Features
 
-- Draggable floating Magic Bag entry point with edge snapping
-- Save the current tab into Magic Bag
-- In-page panel for viewing, searching, deleting, clearing, and reordering saved tabs
+- Context menu to save the current tab into Magic Bag
 - Toolbar popup for showing the panel, importing, and exporting
 - Bilingual UI support in Chinese and English
 
@@ -114,7 +107,6 @@ pnpm build
 - `React 18.3.1`
 - `TypeScript 5.x`
 - `Tailwind CSS`
-- `react-draggable`
 - `@dnd-kit`
 - `Manifest V3`
 
@@ -124,7 +116,7 @@ pnpm build
 - `entrypoints/content/index.tsx`: content script entry that mounts in-page UI
 - `entrypoints/content/TabGrid.tsx`: main saved-tabs panel
 - `entrypoints/popup/PopupPage.tsx`: browser toolbar popup
-- `utils/storage.ts`: storage for saved tabs and icon position
+- `utils/storage.ts`: storage for saved tabs
 - `utils/i18n.ts`: runtime bilingual copy
 - `_locales/`: browser-level localization assets for extension metadata
 

@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root';
 import { useState, useEffect, useCallback } from 'react';
-import BagIcon from './BagIcon';
 import { TabGrid } from './TabGrid';
 import { Toast } from './Toast';
 import { setRuntimeLocalePreference, t } from '~/utils/i18n';
@@ -23,13 +22,8 @@ function MagicBagApp() {
 
   // Handle tab click - open URL in new tab (GRID-04)
   const handleTabClick = useCallback((url: string) => {
-    // Send message to background script to open tab
+    setIsGridOpen(false);
     chrome.runtime.sendMessage({ type: 'open-tab', url });
-  }, []);
-
-  // Toggle grid open/closed (GRID-01)
-  const toggleGrid = useCallback(() => {
-    setIsGridOpen((prev) => !prev);
   }, []);
 
   // Handle grid close
@@ -77,7 +71,6 @@ function MagicBagApp() {
 
   return (
     <>
-      <BagIcon onToggleGrid={toggleGrid} />
       <TabGrid
         isOpen={isGridOpen}
         onClose={handleGridClose}

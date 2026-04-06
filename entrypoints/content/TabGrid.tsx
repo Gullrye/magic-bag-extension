@@ -14,7 +14,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { clearTabs, iconPosition, removeTab, reorderTabs, savedTabs } from '~/utils/storage';
+import { clearTabs, removeTab, reorderTabs, savedTabs } from '~/utils/storage';
 import { useClickOutside } from '~/utils/clickOutside';
 import { ConfirmDialog } from './ConfirmDialog';
 import { EmptyState } from './EmptyState';
@@ -67,7 +67,6 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   const [query, setQuery] = useState('');
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [tabs, setTabs] = useState<SavedTab[]>([]);
-  const [iconPos, setIconPos] = useState({ x: 0, y: 0 });
   const gridRef = useRef<HTMLDivElement>(null);
 
   const filteredTabs = useMemo(() => {
@@ -138,12 +137,6 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    iconPosition.getValue().then((pos) => {
-      setIconPos({ x: pos.x, y: pos.y });
-    });
-  }, []);
-
   useClickOutside(gridRef, onClose);
 
   useEffect(() => {
@@ -170,7 +163,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
       ref={gridRef}
       className="magic-bag-panel"
       style={{
-        transformOrigin: `${iconPos.x}px ${iconPos.y}px`,
+        transformOrigin: 'top right',
         animation: 'gridOpen 300ms cubic-bezier(0.4, 0, 0.2, 1)',
       }}
       role="dialog"

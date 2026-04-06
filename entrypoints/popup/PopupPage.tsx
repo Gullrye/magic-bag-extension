@@ -89,7 +89,7 @@ export function PopupPage() {
       }
 
       await chrome.tabs.sendMessage(activeTab.id, { type: 'open-grid' });
-      showToast(t('popupShowPanelSuccess'), 'success');
+      window.close();
     } catch (error) {
       showToast(t('popupShowPanelError'), 'warning');
     }

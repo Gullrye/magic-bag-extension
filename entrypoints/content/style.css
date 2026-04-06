@@ -35,51 +35,6 @@
   pointer-events: auto;
 }
 
-.magic-bag-trigger {
-  position: relative;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
-}
-
-.magic-bag-trigger__halo {
-  position: absolute;
-  inset: -8px;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle, rgba(185, 138, 56, 0.32) 0%, rgba(185, 138, 56, 0.08) 46%, transparent 72%);
-  opacity: 0;
-  transform: scale(0.88);
-  transition: opacity 180ms ease, transform 220ms ease;
-}
-
-.magic-bag-trigger__badge {
-  position: absolute;
-  top: -7px;
-  right: -5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border: 1px solid rgba(191, 151, 79, 0.75);
-  border-radius: 999px;
-  background: linear-gradient(180deg, #f3e1b6 0%, #d2a95b 100%);
-  color: #4d2414;
-  box-shadow: 0 8px 18px rgba(59, 28, 18, 0.22);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-indent: 0.18em;
-}
-
-.magic-bag-trigger[data-hovered='true'] .magic-bag-trigger__halo,
-.magic-bag-trigger[data-dragging='true'] .magic-bag-trigger__halo {
-  opacity: 1;
-  transform: scale(1);
-}
-
 .magic-bag-panel {
   position: fixed;
   z-index: 2147483646;

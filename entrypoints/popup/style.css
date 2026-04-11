@@ -279,6 +279,7 @@ body {
 }
 
 .popup-toast__dot {
+  flex-shrink: 0;
   width: 8px;
   height: 8px;
   border-radius: 999px;

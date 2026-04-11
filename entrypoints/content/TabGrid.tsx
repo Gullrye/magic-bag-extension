@@ -68,6 +68,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [tabs, setTabs] = useState<SavedTab[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredTabs = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -134,20 +135,22 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
   useEffect(() => {
     if (isOpen) {
       setQuery('');
+      // Auto-focus search input after the open animation starts
+      requestAnimationFrame(() => {
+        searchInputRef.current?.focus();
+      });
     }
   }, [isOpen]);
 
   useClickOutside(gridRef, onClose);
 
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    // Prevent keyboard events from reaching the host page's shortcut listeners
+    e.nativeEvent.stopImmediatePropagation();
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    if (e.key === 'Escape') {
+      onClose();
+    }
   }, [onClose]);
 
   if (!isOpen) {
@@ -162,6 +165,8 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
     <div
       ref={gridRef}
       className="magic-bag-panel"
+      onKeyDown={handleKeyDown}
+      tabIndex={-1}
       style={{
         transformOrigin: 'top right',
         animation: 'gridOpen 300ms cubic-bezier(0.4, 0, 0.2, 1)',
@@ -190,6 +195,7 @@ export function TabGrid({ isOpen, onClose, onTabClick }: TabGridProps) {
                 </svg>
               </span>
               <input
+                ref={searchInputRef}
                 id="magic-bag-search"
                 type="text"
                 value={query}

@@ -88,6 +88,12 @@ export function PopupPage() {
         return;
       }
 
+      const url = activeTab.url ?? '';
+      if (/^(chrome|edge|about|chrome-extension):/.test(url)) {
+        showToast(t('popupShowPanelInternal'), 'warning');
+        return;
+      }
+
       await chrome.tabs.sendMessage(activeTab.id, { type: 'open-grid' });
       window.close();
     } catch (error) {

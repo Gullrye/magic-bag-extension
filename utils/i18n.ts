@@ -48,7 +48,8 @@ const zhCN: MessageCatalog = {
   popupCollectError: '当前页面暂时无法收入法宝袋',
   popupMissingCurrentTab: '未找到当前标签页',
   popupShowPanelSuccess: '已在当前标签页展示面板',
-  popupShowPanelError: '当前页面暂时无法展示面板',
+  popupShowPanelError: '请刷新当前页面后重试',
+  popupShowPanelInternal: '浏览器内部页面不支持展示面板',
   popupExportSuccess: (params) => `已导出 ${params?.count ?? 0} 个标签页`,
   popupExportError: (params) => `导出失败：${params?.error ?? ''}`,
   popupImportSuccess: (params) => `已导入 ${params?.count ?? 0} 个标签页`,
@@ -130,7 +131,8 @@ const enUS: MessageCatalog = {
   popupCollectError: 'This page cannot be saved to Magic Bag right now',
   popupMissingCurrentTab: 'Current tab not found',
   popupShowPanelSuccess: 'Panel opened on the current tab',
-  popupShowPanelError: 'The panel cannot be shown on this page right now',
+  popupShowPanelError: 'Please reload the current page and try again',
+  popupShowPanelInternal: 'Browser internal pages are not supported',
   popupExportSuccess: (params) => {
     const count = Number(params?.count ?? 0);
     return `Exported ${count} tab${count === 1 ? '' : 's'}`;
